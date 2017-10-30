@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'variables';
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+/* Make room for the static navbar */
+body {
+  margin-top: 80px;
+}
