@@ -9,7 +9,6 @@ import { AlbumService } from '../shared/album.service';
 })
 
 export class AlbumListComponent implements OnInit {
-  title = 'Album list';
   albums: Album[] = [];
 
   constructor(private albumService: AlbumService) { }

@@ -1,5 +1,6 @@
 import { Comment } from './comment.model';
 import { User } from './user.model';
+import { Photo } from './photo.model';
 
 export class Album {
   id: number;
@@ -9,4 +10,5 @@ export class Album {
   creationDate: string;
   authors: User[];
   comments: Comment[];
+  photos: Photo[];
 }
