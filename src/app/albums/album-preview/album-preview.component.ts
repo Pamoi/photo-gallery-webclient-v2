@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { Album } from '../shared/album.model';
+import { Photo } from '../shared/photo.model';
 
 @Component({
   selector: 'app-album-preview',
@@ -8,10 +9,15 @@ import { Album } from '../shared/album.model';
   styleUrls: ['./album-preview.component.scss']
 })
 
-export class AlbumPreviewComponent {
+export class AlbumPreviewComponent implements OnInit {
   @Input() album: Album;
+  coverPhoto: Photo;
 
-  getCoverUrl(): string {
-    return 'https://api.mgirod.ch/photo/' + this.album.photos[0].id + '/resized';
+  ngOnInit(): void {
+    this.coverPhoto = this.album.photos[Math.floor(Math.random() * this.album.photos.length)];
+  }
+
+  getImageUrl(photo: Photo): string {
+    return 'http://localhost:8080/photo/' + photo.id + '/cover';
   }
 }

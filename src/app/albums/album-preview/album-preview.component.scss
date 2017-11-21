@@ -1,15 +1,44 @@
+@import '../../../variables';
+
+$card-border-radius: 8px;
+$comment-box-border-radius: 5px;
+$comment-box-border-color: rgba(255, 255, 255, 0.25);
+
 .preview-text {
   width: 100%;
-  background-color: #1c313a;
   color: #ffffff;
   padding: 10px 20px;
+  border-top-left-radius: $card-border-radius;
+  border-top-right-radius: $card-border-radius;
 }
 
-.preview-photo {
+.preview-comments {
+  width: 100%;
+  margin-left: 0px;
+  color: #ffffff;
+  padding-top: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 15px;
+  border-bottom-left-radius: $card-border-radius;
+  border-bottom-right-radius: $card-border-radius;
+  min-height: 20px;
+}
+
+.preview-comment {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: $comment-box-border-radius;
+  border: 1px solid $comment-box-border-color;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 10px;
+}
+
+.preview-image {
   width: 100%;
 }
 
-.preview-photo-box {
-  max-height: 600px;
-  overflow: hidden;
+hr {
+  border-color: $comment-box-border-color;
 }

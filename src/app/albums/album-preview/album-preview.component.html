@@ -1,9 +1,14 @@
-<div class="preview-photo-box">
-  <img src={{getCoverUrl()}} class="preview-photo" />
-</div>
-<div class="preview-text">
+<div class="preview-text" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
   <h2>{{album.title}}</h2>
   <p>
     {{album.description}}
   </p>
+</div>
+<img src="{{getImageUrl(coverPhoto)}}" class="preview-image" />
+<div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
+  <div class="col-sm preview-comment" *ngFor="let comment of album.comments">
+    <h4>{{comment.author.username}}<small>, {{comment.date | date:'le d.M.y à HH:mm'}}</small></h4>
+    <hr />
+    <p>{{comment.text}}</p>
+  </div>
 </div>

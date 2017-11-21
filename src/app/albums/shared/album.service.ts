@@ -7,7 +7,7 @@ import { Album } from './album.model';
 
 @Injectable()
 export class AlbumService {
-  private albumsUrl = 'https://api.mgirod.ch/album/list/1';
+  private albumsUrl = 'http://localhost:8080/album/list/1';
 
   constructor(private http: Http) { }
 

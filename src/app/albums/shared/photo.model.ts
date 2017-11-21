@@ -7,4 +7,5 @@ export class Photo {
   uploadDate: string;
   author: User;
   comments: Comment[];
+  dominantColor: string;
 }
