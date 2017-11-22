@@ -1,25 +1,37 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
-import 'rxjs/add/operator/toPromise';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { catchError } from 'rxjs/operators';
 
 import { Album } from './album.model';
 
 @Injectable()
 export class AlbumService {
-  private albumsUrl = 'http://localhost:8080/album/list/1';
+  private albumsUrl = 'http://localhost:8080/album';
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
-  getAlbums(): Promise<Album[]> {
-    return this.http.get(this.albumsUrl)
-      .toPromise()
-      .then(response => response.json() as Album[])
-      .catch(this.handleError);
+  getAlbums(): Observable<Album[]> {
+    return this.http.get<Album[]>(this.albumsUrl + '/list/1')
+      .pipe(
+        catchError(this.handleError([]))
+      );
   }
 
-  handleError(error: any): Promise<Album[]> {
-    console.error('Error while fetching albums: ', error);
-    return Promise.reject(error.message || error);
+  getAlbum(id: number): Observable<Album> {
+    return this.http.get<Album>(this.albumsUrl + '/' + id)
+      .pipe(
+        catchError(this.handleError(null))
+      );
+  }
+
+  private handleError<T>(result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+
+      return of(result as T);
+    };
   }
 }

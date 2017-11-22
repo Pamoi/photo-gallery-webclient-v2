@@ -4,7 +4,9 @@
     {{album.description}}
   </p>
 </div>
-<img src="{{getImageUrl(coverPhoto)}}" class="preview-image" />
+<a routerLink="/album/{{album.id}}">
+  <img src="{{getImageUrl(coverPhoto)}}" class="preview-image" />
+</a>
 <div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
   <div class="col-sm preview-comment" *ngFor="let comment of album.comments">
     <h4>{{comment.author.username}}<small>, {{comment.date | date:'le d.M.y à HH:mm'}}</small></h4>
