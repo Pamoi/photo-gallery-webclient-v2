@@ -1,7 +1,10 @@
 <h1>{{album?.title}}</h1>
 <p>{{album?.description}}</p>
-<div>
-    <div *ngFor="let photo of album?.photos">
-        <img src="{{getPhotoUrl(photo)}}" />
+<hr />
+<div #fullWidthContainer class="full-width">
+    <div #thumbnailContainer class="thumbnail-container">
+        <div *ngFor="let photo of album?.photos" style="float:left;">
+            <img src="{{getPhotoUrl(photo)}}" class="image-thumbnail" />
+        </div>
     </div>
 </div>
