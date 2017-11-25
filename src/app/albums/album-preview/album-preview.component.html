@@ -8,8 +8,8 @@
   <img src="{{getImageUrl(coverPhoto)}}" class="preview-image" />
 </a>
 <div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
-  <div class="col-sm preview-comment" *ngFor="let comment of album.comments">
-    <h4>{{comment.author.username}}<small>, {{comment.date | date:'le d.M.y à HH:mm'}}</small></h4>
+  <div class="col-md preview-comment" *ngFor="let comment of album.comments | slice:-4">
+    <h5>{{comment.author.username}}<small>, {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
     <hr />
     <p>{{comment.text}}</p>
   </div>
