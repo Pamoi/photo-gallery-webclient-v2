@@ -10,13 +10,15 @@ import { AlbumListComponent } from './albums/album-list/album-list.component';
 import { AlbumPreviewComponent } from './albums/album-preview/album-preview.component';
 import { AlbumDetailComponent } from './albums/album-detail/album-detail.component';
 import { HttpClientModule } from '@angular/common/http';
+import {AuthorListPipe} from './albums/shared/author-list.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     AlbumListComponent,
     AlbumPreviewComponent,
-    AlbumDetailComponent
+    AlbumDetailComponent,
+    AuthorListPipe
   ],
   imports: [
     BrowserModule,

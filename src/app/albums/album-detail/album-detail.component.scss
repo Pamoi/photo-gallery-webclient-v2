@@ -1,4 +1,5 @@
 $thumbnail-side: 200px;
+$altTitleColor: rgb(119, 119, 119);
 
 .full-width {
   width: 100%;
@@ -30,4 +31,12 @@ $thumbnail-side: 200px;
 
 .send-btn {
   margin-bottom: 20px;
+}
+
+h1 > small {
+  color: $altTitleColor;
+}
+
+h5 > small {
+  color: $altTitleColor;
 }

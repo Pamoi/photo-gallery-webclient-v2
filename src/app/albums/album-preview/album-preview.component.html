@@ -1,5 +1,6 @@
 <div class="preview-text" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
-  <h2>{{album.title}}</h2>
+  <h2>{{album.title}} <small>{{album.authors | authorList}}, {{album.date | date:'le d.M.y'}}</small></h2>
+  <hr />
   <p>
     {{album.description}}
   </p>
@@ -9,7 +10,7 @@
 </a>
 <div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
   <div class="col-md preview-comment" *ngFor="let comment of album.comments | slice:-4">
-    <h5>{{comment.author.username}}<small>, {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
+    <h5>{{comment.author.username}}<small> {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
     <hr />
     <p>{{comment.text}}</p>
   </div>

@@ -3,6 +3,8 @@
 $card-border-radius: 8px;
 $comment-box-border-radius: 5px;
 $comment-box-border-color: rgba(255, 255, 255, 0.25);
+$textColor: #ffffff;
+$altTitleColor: darken($textColor, 20%);
 
 .preview-text {
   width: 100%;
@@ -15,7 +17,7 @@ $comment-box-border-color: rgba(255, 255, 255, 0.25);
 .preview-comments {
   width: 100%;
   margin-left: 0px;
-  color: #ffffff;
+  color: $textColor;
   padding-top: 10px;
   padding-left: 5px;
   padding-right: 5px;
@@ -41,4 +43,12 @@ $comment-box-border-color: rgba(255, 255, 255, 0.25);
 
 hr {
   border-color: $comment-box-border-color;
+}
+
+h2 > small {
+  color: $altTitleColor;
+}
+
+h5 > small {
+  color: $altTitleColor;
 }
