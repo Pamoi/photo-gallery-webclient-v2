@@ -42,7 +42,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   }
 
   getPhotoUrl(photo: Photo): string {
-    return 'http://localhost:8080/photo/' + photo.id + '/thumb';
+    return this.albumService.getThumbnailPhotoUrl(photo);
   }
 
   private centerThumbnailContainer(): void {
