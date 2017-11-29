@@ -10,6 +10,7 @@ import { AlbumService } from './shared/album.service';
 import { AlbumListComponent } from './album-list/album-list.component';
 import { AlbumPreviewComponent } from './album-preview/album-preview.component';
 import { AlbumDetailComponent } from './album-detail/album-detail.component';
+import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 
 import { AuthorListPipe } from './shared/author-list.pipe';
 
@@ -18,6 +19,7 @@ import { AuthorListPipe } from './shared/author-list.pipe';
     AlbumListComponent,
     AlbumPreviewComponent,
     AlbumDetailComponent,
+    PhotoDetailComponent,
     AuthorListPipe
   ],
   imports: [

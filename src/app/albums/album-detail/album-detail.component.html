@@ -5,7 +5,9 @@
 <div #fullWidthContainer class="full-width">
   <div #thumbnailContainer class="thumbnail-container">
     <div *ngFor="let photo of album?.photos" style="float:left;">
-      <img src="{{getPhotoUrl(photo)}}" class="image-thumbnail" />
+      <a routerLink="/album/{{album.id}}/photo/{{photo.id}}">
+        <img src="{{getPhotoUrl(photo)}}" class="image-thumbnail" />
+      </a>
     </div>
   </div>
 </div>
