@@ -6,7 +6,7 @@
   <div #thumbnailContainer class="thumbnail-container">
     <div *ngFor="let photo of album?.photos" style="float:left;">
       <a routerLink="/album/{{album.id}}/photo/{{photo.id}}">
-        <img src="{{getPhotoUrl(photo)}}" class="image-thumbnail" />
+        <img [appHttpSrc]="getPhotoUrl(photo)" class="image-thumbnail" />
       </a>
     </div>
   </div>

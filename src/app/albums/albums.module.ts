@@ -13,6 +13,7 @@ import { AlbumDetailComponent } from './album-detail/album-detail.component';
 import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 
 import { AuthorListPipe } from './shared/author-list.pipe';
+import { HttpSrcDirective } from './shared/http-src.directive';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AuthorListPipe } from './shared/author-list.pipe';
     AlbumPreviewComponent,
     AlbumDetailComponent,
     PhotoDetailComponent,
-    AuthorListPipe
+    AuthorListPipe,
+    HttpSrcDirective
   ],
   imports: [
     AlbumsRoutingModule,
