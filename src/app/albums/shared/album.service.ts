@@ -8,7 +8,6 @@ import { catchError } from 'rxjs/operators';
 import { AppConfigService } from '../../core/app-config.service';
 
 import { Album } from './album.model';
-import { Photo } from './photo.model';
 
 @Injectable()
 export class AlbumService {
@@ -27,22 +26,6 @@ export class AlbumService {
       .pipe(
         catchError(this.handleError(null))
       );
-  }
-
-  getPhotoUrl(photo: Photo): string {
-    return this.appConfig.getBackendUrl() + '/photo/' + photo.id;
-  }
-
-  getResizedPhotoUrl(photo: Photo): string {
-    return this.appConfig.getBackendUrl() + '/photo/' + photo.id + '/resized';
-  }
-
-  getCoverPhotoUrl(photo: Photo): string {
-    return this.appConfig.getBackendUrl() + '/photo/' + photo.id + '/cover';
-  }
-
-  getThumbnailPhotoUrl(photo: Photo): string {
-    return this.appConfig.getBackendUrl() + '/photo/' + photo.id + '/thumb';
   }
 
   private handleError<T>(result?: T) {

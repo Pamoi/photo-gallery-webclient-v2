@@ -1,5 +1,5 @@
 <div class="image-frame">
-  <img [appHttpSrc]="getPhotoUrl(photo)" class="image no-select" />
+  <app-photo [photo]="photo" type="detail"></app-photo>
 </div>
 <div class="button-bar">
   <button class="btn btn-dark" (click)="previousPhoto()">

@@ -1,0 +1,29 @@
+$thumbnail-side: 200px;
+
+.detail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  margin: auto;
+}
+
+.thumbnail {
+  max-width: $thumbnail-side;
+  max-height: $thumbnail-side;
+  margin: 1px;
+  float: left;
+}
+
+.thumbnail:hover {
+  border: 1px solid #4b4b4b;
+}
+
+.cover {
+  width: 100%;
+}

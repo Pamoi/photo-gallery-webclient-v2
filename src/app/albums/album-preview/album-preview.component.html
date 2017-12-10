@@ -6,7 +6,7 @@
   </p>
 </div>
 <a routerLink="/album/{{album.id}}">
-  <img [appHttpSrc]="getImageUrl(coverPhoto)" class="preview-image" />
+  <app-photo [photo]="coverPhoto" [type]="'cover'"></app-photo>
 </a>
 <div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
   <div class="col-md preview-comment" *ngFor="let comment of album.comments | slice:-4">

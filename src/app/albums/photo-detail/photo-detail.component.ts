@@ -27,14 +27,6 @@ export class PhotoDetailComponent implements OnInit {
     this.getAlbum();
   }
 
-  getPhotoUrl(photo: Photo): string {
-    if (!photo) {
-      return '';
-    }
-
-    return this.albumService.getResizedPhotoUrl(photo);
-  }
-
   nextPhoto(): void {
     if (!this.album || this.album.photos.length === 0) {
       return;

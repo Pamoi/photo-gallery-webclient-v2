@@ -6,14 +6,15 @@ import { CoreModule } from '../core/core.module';
 import { AlbumsRoutingModule } from './albums-routing.module';
 
 import { AlbumService } from './shared/album.service';
+import { PhotoService } from './shared/photo.service';
 
 import { AlbumListComponent } from './album-list/album-list.component';
 import { AlbumPreviewComponent } from './album-preview/album-preview.component';
 import { AlbumDetailComponent } from './album-detail/album-detail.component';
 import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
+import { PhotoComponent } from './photo/photo.component';
 
 import { AuthorListPipe } from './shared/author-list.pipe';
-import { HttpSrcDirective } from './shared/http-src.directive';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { HttpSrcDirective } from './shared/http-src.directive';
     AlbumDetailComponent,
     PhotoDetailComponent,
     AuthorListPipe,
-    HttpSrcDirective
+    PhotoComponent
   ],
   imports: [
     AlbumsRoutingModule,
@@ -30,6 +31,6 @@ import { HttpSrcDirective } from './shared/http-src.directive';
     HttpClientModule,
     CoreModule
   ],
-  providers: [ AlbumService ],
+  providers: [ AlbumService, PhotoService ],
 })
 export class AlbumsModule {}

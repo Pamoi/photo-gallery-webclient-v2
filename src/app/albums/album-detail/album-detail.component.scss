@@ -1,4 +1,3 @@
-$thumbnail-side: 200px;
 $altTitleColor: rgb(119, 119, 119);
 
 .full-width {
@@ -10,17 +9,6 @@ $altTitleColor: rgb(119, 119, 119);
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
-}
-
-.image-thumbnail {
-  max-width: $thumbnail-side;
-  max-height: $thumbnail-side;
-  margin: 1px;
-  float: left;
-}
-
-.image-thumbnail:hover {
-  border: 1px solid #4b4b4b;
 }
 
 .comment-input {
