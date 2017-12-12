@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import { never } from 'rxjs/observable/never';
 import { catchError } from 'rxjs/operators';
 
 import { AppConfigService } from '../../core/app-config.service';
@@ -14,8 +15,8 @@ export class AlbumService {
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) {}
 
-  getAlbums(): Observable<Album[]> {
-    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list/1')
+  getAlbums(page: number): Observable<Album[]> {
+    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list/' + page)
       .pipe(
         catchError(this.handleError([]))
       );
@@ -32,7 +33,11 @@ export class AlbumService {
     return (error: any): Observable<T> => {
       console.error(error);
 
-      return of(result as T);
+      if (result) {
+        return of(result as T);
+      } else {
+        return never();
+      }
     };
   }
 }

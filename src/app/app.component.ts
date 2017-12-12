@@ -8,6 +8,4 @@ import { AlbumService } from './albums/shared/album.service';
   styleUrls: ['./app.component.css'],
   providers: [AlbumService]
 })
-export class AppComponent {
-  title = 'Salut';
-}
+export class AppComponent {}
