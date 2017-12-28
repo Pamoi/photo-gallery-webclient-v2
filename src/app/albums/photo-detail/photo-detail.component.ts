@@ -18,7 +18,7 @@ import { Photo } from '../shared/photo.model';
 export class PhotoDetailComponent implements OnInit {
   album: Album;
   photo: Photo;
-  index: number;
+  private index: number;
 
   constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService) {
   }
@@ -64,11 +64,11 @@ export class PhotoDetailComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
     switch (event.key) {
-      case 'ArrowLeft':
+      case 'ArrowRight':
         this.nextPhoto();
         break;
 
-      case 'ArrowRight':
+      case 'ArrowLeft':
         this.previousPhoto();
         break;
 
@@ -80,13 +80,14 @@ export class PhotoDetailComponent implements OnInit {
 
 
   private getAlbum(): void {
-    const id = +this.route.snapshot.paramMap.get('albumId');
+    const id = +this.route.snapshot.params['albumId'];
     this.albumService.getAlbum(id).subscribe(album => this.setAlbumAndPhoto(album));
   }
 
   private setAlbumAndPhoto(album: Album): void {
     this.album = album;
-    const id = +this.route.snapshot.paramMap.get('photoId');
+    this.index = 0;
+    const id = +this.route.snapshot.params['photoId'];
     this.album.photos.forEach((p, i) => {
       if (p.id === id) {
         this.photo = p;
