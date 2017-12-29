@@ -37,7 +37,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   }
 
   getAlbum(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
+    const id = +this.route.snapshot.params['id'];
     this.albumService.getAlbum(id).subscribe(album => this.album = album);
   }
 
