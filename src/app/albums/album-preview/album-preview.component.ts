@@ -16,6 +16,8 @@ export class AlbumPreviewComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.coverPhoto = this.album.photos[Math.floor(Math.random() * this.album.photos.length)];
+    if (this.album && this.album.photos) {
+      this.coverPhoto = this.album.photos[Math.floor(Math.random() * this.album.photos.length)];
+    }
   }
 }

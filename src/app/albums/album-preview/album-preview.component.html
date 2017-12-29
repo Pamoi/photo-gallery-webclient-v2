@@ -1,4 +1,4 @@
-<div class="preview-text" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
+<div class="preview-text" [ngStyle]="{'background-color': coverPhoto?.dominantColor}">
   <h2>{{album.title}} <small>{{album.authors | authorList}}, {{album.date | date:'le d.M.y'}}</small></h2>
   <hr />
   <p>
@@ -8,7 +8,7 @@
 <a routerLink="/album/{{album.id}}">
   <app-photo [photo]="coverPhoto" [type]="'cover'"></app-photo>
 </a>
-<div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto.dominantColor}">
+<div class="row preview-comments" [ngStyle]="{'background-color': coverPhoto?.dominantColor}">
   <div class="col-md preview-comment" *ngFor="let comment of album.comments | slice:-4">
     <h5>{{comment.author.username}}<small> {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
     <hr />
