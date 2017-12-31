@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  private static HEADER_NAME = 'X_AUTH_TOKEN';
+  private static HEADER_NAME = 'X-AUTH-TOKEN';
 
   constructor() {
   }

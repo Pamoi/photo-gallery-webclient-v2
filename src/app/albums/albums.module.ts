@@ -31,6 +31,7 @@ import { AuthorListPipe } from './shared/author-list.pipe';
     HttpClientModule,
     CoreModule
   ],
-  providers: [ AlbumService, PhotoService ],
+  providers: [AlbumService, PhotoService],
 })
-export class AlbumsModule {}
+export class AlbumsModule {
+}

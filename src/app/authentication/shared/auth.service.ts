@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthUser } from './auth-user.model';
-import { HttpClient } from '@angular/common/http';
-import { AppConfigService } from './app-config.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { AppConfigService } from '../../core/app-config.service';
+import { Observable } from 'rxjs/Observable';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +17,7 @@ export class AuthService {
   public static TOKEN_KEY = 'photo-gallery-webclient-v2.token';
 
   private user: AuthUser;
-  private isLoggedIn: boolean;
+  public isLoggedIn: boolean;
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) {
     const userString = localStorage.getItem(AuthService.USER_KEY);
@@ -23,7 +26,7 @@ export class AuthService {
       const userObject = JSON.parse(userString);
 
       this.user = new AuthUser();
-      this.user.username = userObject.name;
+      this.user.username = userObject.username;
       this.user.id = userObject.id;
       this.user.admin = userObject.admin;
 
@@ -35,16 +38,25 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string): void {
-    this.http.post<AuthUser>(this.appConfig.getBackendUrl() + '/authenticate', {
+  login(username: string, password: string): Observable<LoginStatus> {
+    return this.http.post<AuthUser>(this.appConfig.getBackendUrl() + '/authenticate', {
       'username': username,
       'password': password
-    }).subscribe(user => {
+    }).map(user => {
       this.user = user;
       localStorage.setItem(AuthService.TOKEN_KEY, this.user.token);
       this.isLoggedIn = true;
       localStorage.setItem(AuthService.USER_KEY, JSON.stringify(this.user));
-    });
+
+      return LoginStatus.Success;
+    }).pipe(catchError(
+      (error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          return of(LoginStatus.BadCredentials);
+        }
+        return of(LoginStatus.NetworkError);
+      }
+    ));
   }
 
   logout(): void {
@@ -76,4 +88,10 @@ export class AuthService {
 
     return '';
   }
+}
+
+export enum LoginStatus {
+  Success,
+  NetworkError,
+  BadCredentials
 }

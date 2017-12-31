@@ -6,6 +6,7 @@ import { CoreModule } from './core/core.module';
 import { AlbumsModule } from './albums/albums.module';
 
 import { AppComponent } from './app.component';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @NgModule({
   declarations: [
@@ -15,9 +16,11 @@ import { AppComponent } from './app.component';
     BrowserModule,
     AppRoutingModule,
     CoreModule,
+    AuthenticationModule,
     AlbumsModule
   ],
-  providers: [ ],
-  bootstrap: [ AppComponent ]
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
