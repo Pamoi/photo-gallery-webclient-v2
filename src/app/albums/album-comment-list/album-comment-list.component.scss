@@ -1,0 +1,25 @@
+$altTitleColor: rgb(119, 119, 119);
+
+.comment-input {
+  width: 100%;
+  padding: 5px 10px;
+  height: 80px;
+}
+
+.send-btn {
+  margin-bottom: 20px;
+}
+
+.delete-btn {
+  color: red;
+  float: right;
+  font-size: 20px;
+}
+
+.delete-btn:hover {
+  cursor: pointer;
+}
+
+h5 > small {
+  color: $altTitleColor;
+}

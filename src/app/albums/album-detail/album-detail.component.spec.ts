@@ -14,6 +14,9 @@ import { CoreModule } from '../../core/core.module';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import { By } from '@angular/platform-browser';
+import { AlbumCommentListComponent } from '../album-comment-list/album-comment-list.component';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../authentication/shared/auth.service';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
@@ -22,9 +25,9 @@ describe('AlbumDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, CoreModule],
-      declarations: [AlbumDetailComponent, AuthorListPipe, PhotoComponent],
-      providers: [AlbumService, HttpClient, HttpHandler, AppConfigService, {
+      imports: [RouterTestingModule, CoreModule, FormsModule],
+      declarations: [AlbumDetailComponent, AlbumCommentListComponent, AuthorListPipe, PhotoComponent],
+      providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, {
         provide: ActivatedRoute, useValue: {
           snapshot: { params: { id: 13 } }
         }

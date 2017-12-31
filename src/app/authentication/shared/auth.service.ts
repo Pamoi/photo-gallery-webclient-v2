@@ -29,6 +29,7 @@ export class AuthService {
       this.user.username = userObject.username;
       this.user.id = userObject.id;
       this.user.admin = userObject.admin;
+      this.user.token = userObject.token;
 
       localStorage.setItem(AuthService.TOKEN_KEY, this.user.token);
 
@@ -63,6 +64,15 @@ export class AuthService {
     this.isLoggedIn = false;
     this.user = null;
     localStorage.setItem(AuthService.USER_KEY, null);
+    localStorage.setItem(AuthService.TOKEN_KEY, null);
+  }
+
+  getUserId(): number {
+    if (this.isLoggedIn) {
+      return this.user.id;
+    }
+
+    return undefined;
   }
 
   getUsername(): string {

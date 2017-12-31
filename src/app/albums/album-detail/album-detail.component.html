@@ -20,22 +20,5 @@
     </div>
   </div>
 </div>
-<div [hidden]="!album">
-  <table class="table table-striped table-bordered" *ngIf="album">
-    <thead>
-      <tr>
-        <th>Commentaires</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let comment of album?.comments">
-        <td>
-          <h5>{{comment.author.username}}<small> {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
-          {{comment.text}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <textarea class="comment-input" placeholder="Ajouter un commentaire..."></textarea>
-  <button class="btn btn-primary send-btn">Envoyer</button>
-</div>
+
+<app-album-comment-list [album]="album" [hidden]="!album"></app-album-comment-list>

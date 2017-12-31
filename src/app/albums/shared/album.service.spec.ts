@@ -91,7 +91,7 @@ describe('AlbumService', () => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
             service.getAlbum(1).subscribe(album => fail('observable should not resolve on failed request'),
-              error => expect(error.message).toEqual('An error occurred during while processing request.'));
+              error => expect(error.message).toEqual('An error occurred while fetching album.'));
 
             const req = httpMock.expectOne('https://mybackend.com/album/1');
             expect(req.request.method).toEqual('GET');

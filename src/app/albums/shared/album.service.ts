@@ -13,31 +13,49 @@ import { Album } from './album.model';
 @Injectable()
 export class AlbumService {
 
-  constructor(private http: HttpClient, private appConfig: AppConfigService) {}
+  constructor(private http: HttpClient, private appConfig: AppConfigService) {
+  }
 
   getAlbums(page: number): Observable<Album[]> {
     return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list/' + page)
       .pipe(
-        catchError(this.handleError([]))
+        catchError(this.returnValue([]))
       );
   }
 
   getAlbum(id: number): Observable<Album> {
     return this.http.get<Album>(this.appConfig.getBackendUrl() + '/album/' + id)
       .pipe(
-        catchError(this.handleError(null))
+        catchError(this.throwError<Album>('An error occurred while fetching album.'))
       );
   }
 
-  private handleError<T>(result?: T) {
+  commentAlbum(id: number, text: string): Observable<Album> {
+    return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album/' + id + '/comment', {
+      text: text
+    }).pipe(
+      catchError(this.throwError<Album>('An error occurred while sending comment.'))
+    );
+  }
+
+  deleteComment(albumId: number, commentId: number): Observable<void> {
+    return this.http.delete<void>(this.appConfig.getBackendUrl() + '/album/' + albumId + '/comment/' + commentId)
+      .pipe(
+        catchError(this.throwError<void>('An error occurred while deleting comment.'))
+      );
+  }
+
+  private returnValue<T>(result: T) {
     return (error: any): Observable<T> => {
       console.error(error);
+      return of(result);
+    };
+  }
 
-      if (result) {
-        return of(result as T);
-      } else {
-        throw new Error('An error occurred during while processing request.');
-      }
+  private throwError<T>(message: string) {
+    return (error: any): Observable<T> => {
+      console.log(error);
+      throw new Error(message);
     };
   }
 }

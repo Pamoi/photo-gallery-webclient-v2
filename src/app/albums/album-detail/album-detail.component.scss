@@ -11,21 +11,7 @@ $altTitleColor: rgb(119, 119, 119);
   overflow: hidden;
 }
 
-.comment-input {
-  width: 100%;
-  padding: 5px 10px;
-  height: 80px;
-}
-
-.send-btn {
-  margin-bottom: 20px;
-}
-
 h1 > small {
-  color: $altTitleColor;
-}
-
-h5 > small {
   color: $altTitleColor;
 }
 

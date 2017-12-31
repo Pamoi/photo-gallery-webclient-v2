@@ -15,6 +15,8 @@ import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 import { PhotoComponent } from './photo/photo.component';
 
 import { AuthorListPipe } from './shared/author-list.pipe';
+import { FormsModule } from '@angular/forms';
+import { AlbumCommentListComponent } from './album-comment-list/album-comment-list.component';
 
 @NgModule({
   declarations: [
@@ -23,12 +25,14 @@ import { AuthorListPipe } from './shared/author-list.pipe';
     AlbumDetailComponent,
     PhotoDetailComponent,
     AuthorListPipe,
-    PhotoComponent
+    PhotoComponent,
+    AlbumCommentListComponent
   ],
   imports: [
     AlbumsRoutingModule,
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     CoreModule
   ],
   providers: [AlbumService, PhotoService],
