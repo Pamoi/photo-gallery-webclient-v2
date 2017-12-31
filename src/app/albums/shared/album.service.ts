@@ -36,7 +36,7 @@ export class AlbumService {
       if (result) {
         return of(result as T);
       } else {
-        return never();
+        throw new Error('An error occurred during while processing request.');
       }
     };
   }

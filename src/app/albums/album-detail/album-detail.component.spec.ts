@@ -10,6 +10,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PhotoComponent } from '../photo/photo.component';
 import { Album } from '../shared/album.model';
 import { of } from 'rxjs/observable/of';
+import { CoreModule } from '../../core/core.module';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
+import { By } from '@angular/platform-browser';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
@@ -18,7 +22,7 @@ describe('AlbumDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, CoreModule],
       declarations: [AlbumDetailComponent, AuthorListPipe, PhotoComponent],
       providers: [AlbumService, HttpClient, HttpHandler, AppConfigService, {
         provide: ActivatedRoute, useValue: {
@@ -66,4 +70,31 @@ describe('AlbumDetailComponent', () => {
     expect(component.thumbnailContainer.nativeElement.style.marginLeft)
       .toEqual(margin + 'px');
   });
+
+  it('should show error message if loading fails', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    const spy = spyOn(albumService, 'getAlbum').and.returnValue(Observable.throw(new Error('Error')));
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component.loadingError).toEqual(true);
+
+    const msg = fixture.debugElement.query(By.css('.alert-warning'));
+    expect(msg.nativeElement.innerText).toEqual('Erreur lors du chargement de l\'album. Réessayer.');
+
+    spy.and.returnValue(of(album));
+    const link = msg.children[0];
+    link.nativeElement.click();
+
+    tick();
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(component.loadingError).toEqual(false);
+    expect(component.album).toEqual(album);
+  }));
 });

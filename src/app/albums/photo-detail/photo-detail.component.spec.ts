@@ -50,6 +50,10 @@ describe('PhotoDetailComponent', () => {
   });
 
   it('should create', () => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
@@ -82,6 +86,9 @@ describe('PhotoDetailComponent', () => {
   }));
 
   it('should call nextPhoto() on button click', fakeAsync(() => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
     fixture.detectChanges();
 
     const spy = spyOn(component, 'nextPhoto');
@@ -96,6 +103,9 @@ describe('PhotoDetailComponent', () => {
   }));
 
   it('should call previousPhoto() on button click', fakeAsync(() => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
     fixture.detectChanges();
 
     const spy = spyOn(component, 'previousPhoto');
@@ -110,6 +120,9 @@ describe('PhotoDetailComponent', () => {
   }));
 
   it('should call Location.back() on close button click', fakeAsync(() => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
     fixture.detectChanges();
 
     const spy = spyOn(location, 'back');

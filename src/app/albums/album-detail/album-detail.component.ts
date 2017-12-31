@@ -14,6 +14,8 @@ import { Photo } from '../shared/photo.model';
 
 export class AlbumDetailComponent implements OnInit, AfterViewInit {
   album: Album;
+  loading = false;
+  loadingError = false;
 
   // Must be equal to the total width (including margins) of thumbnail element.
   thumbnailWidth = 202;
@@ -37,8 +39,17 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   }
 
   getAlbum(): void {
+    this.loading = true;
+    this.loadingError = false;
+
     const id = +this.route.snapshot.params['id'];
-    this.albumService.getAlbum(id).subscribe(album => this.album = album);
+    this.albumService.getAlbum(id).subscribe(album => {
+      this.album = album;
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+      this.loadingError = true;
+    });
   }
 
   private centerThumbnailContainer(): void {

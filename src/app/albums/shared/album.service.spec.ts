@@ -84,13 +84,14 @@ describe('AlbumService', () => {
             req.flush(testAlbum);
           })));
 
-    it('should not return on error',
+    it('should fail on error',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.getAlbum(1).subscribe(album => fail('observable should not resolve on failed request'));
+            service.getAlbum(1).subscribe(album => fail('observable should not resolve on failed request'),
+              error => expect(error.message).toEqual('An error occurred during while processing request.'));
 
             const req = httpMock.expectOne('https://mybackend.com/album/1');
             expect(req.request.method).toEqual('GET');

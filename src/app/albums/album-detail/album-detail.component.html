@@ -1,6 +1,15 @@
-<h1>{{album?.title}} <small>{{album?.authors | authorList}}, {{album?.date | date:'le d.M.y'}}</small></h1>
-<p>{{album?.description}}</p>
-<hr />
+<app-spinner *ngIf="loading"></app-spinner>
+
+<div class="alert alert-warning" *ngIf="loadingError">
+  Erreur lors du chargement de l'album.
+  <span class="alert-link link" (click)="getAlbum()">Réessayer.</span>
+</div>
+
+<div [hidden]="!album">
+  <h1>{{album?.title}} <small>{{album?.authors | authorList}}{{album?.date | date:', le d.M.y'}}</small></h1>
+  <p>{{album?.description}}</p>
+  <hr />
+</div>
 
 <div #fullWidthContainer class="full-width">
   <div #thumbnailContainer class="thumbnail-container">
@@ -11,21 +20,22 @@
     </div>
   </div>
 </div>
-
-<table class="table table-striped table-bordered">
-  <thead>
-    <tr>
-      <th>Commentaires</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let comment of album?.comments">
-      <td>
-        <h5>{{comment.author.username}}<small> {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
-        {{comment.text}}
-      </td>
-    </tr>
-  </tbody>
-</table>
-<textarea class="comment-input" placeholder="Ajouter un commentaire..."></textarea>
-<button class="btn btn-primary send-btn">Envoyer</button>
+<div [hidden]="!album">
+  <table class="table table-striped table-bordered" *ngIf="album">
+    <thead>
+      <tr>
+        <th>Commentaires</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let comment of album?.comments">
+        <td>
+          <h5>{{comment.author.username}}<small> {{comment.date | date:'le d.M.y à HH:mm'}}</small></h5>
+          {{comment.text}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <textarea class="comment-input" placeholder="Ajouter un commentaire..."></textarea>
+  <button class="btn btn-primary send-btn">Envoyer</button>
+</div>

@@ -28,3 +28,8 @@ h1 > small {
 h5 > small {
   color: $altTitleColor;
 }
+
+.link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
