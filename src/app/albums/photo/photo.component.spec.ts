@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhotoComponent } from './photo.component';
 import { PhotoService } from '../shared/photo.service';
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Photo } from '../shared/photo.model';
 import { of } from 'rxjs/observable/of';

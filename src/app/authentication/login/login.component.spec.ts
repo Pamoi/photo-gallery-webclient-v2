@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService, LoginStatus } from '../shared/auth.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
 import { Router } from '@angular/router';

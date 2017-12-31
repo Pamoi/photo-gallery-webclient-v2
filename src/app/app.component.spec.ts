@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from './authentication/shared/auth.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { AppConfigService } from './core/app-config.service';
+import { AppConfigService } from './core/shared/app-config.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

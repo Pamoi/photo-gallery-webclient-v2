@@ -6,7 +6,7 @@ import { of } from 'rxjs/observable/of';
 import { never } from 'rxjs/observable/never';
 import { catchError } from 'rxjs/operators';
 
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 
 import { Album } from './album.model';
 

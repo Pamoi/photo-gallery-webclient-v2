@@ -1,6 +1,6 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AlbumDetailComponent } from './album-detail.component';
 import { AlbumService } from '../shared/album.service';

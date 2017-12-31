@@ -1,7 +1,7 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { AlbumService } from './album.service';
 import { Album } from './album.model';
 

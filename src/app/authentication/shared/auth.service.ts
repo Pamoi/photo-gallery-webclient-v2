@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthUser } from './auth-user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { PhotoService } from '../shared/photo.service';
-import { AppConfigService } from '../../core/app-config.service';
+import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { PhotoDetailComponent } from './photo-detail.component';
 import { PhotoComponent } from '../photo/photo.component';
