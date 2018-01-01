@@ -7,3 +7,8 @@ body {
   margin-top: 70px;
   background-color: #fcfcfc;
 }
+
+.link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

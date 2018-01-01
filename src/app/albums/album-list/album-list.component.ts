@@ -10,11 +10,22 @@ import { AlbumService } from '../shared/album.service';
 
 export class AlbumListComponent implements OnInit {
   albums: Album[] = [];
+  loading: boolean;
+  loadingError: boolean;
 
   constructor(private albumService: AlbumService) { }
 
   getAlbums(): void {
-    this.albumService.getAlbums(1).subscribe(albums => this.albums = albums);
+    this.loading = true;
+    this.loadingError = false;
+
+    this.albumService.getAlbums(1).subscribe(albums => {
+      this.albums = albums;
+      this.loading = false;
+    }, () => {
+      this.loadingError = true;
+      this.loading = false;
+    });
   }
 
   ngOnInit(): void {
