@@ -18,6 +18,18 @@ export class AlbumCommentListComponent {
   constructor(private albumService: AlbumService, private auth: AuthService, private toastService: ToastService) {
   }
 
+  canComment(): boolean {
+    return this.auth.isLoggedIn;
+  }
+
+  getPlaceholder(): string {
+    if (this.auth.isLoggedIn) {
+      return 'Ajouter un commentaire...';
+    } else {
+      return 'Connectez vous pour ajouter un commentaire.';
+    }
+  }
+
   sendComment(): void {
     if (this.album && this.commentText.length > 0) {
       this.albumService.commentAlbum(this.album.id, this.commentText).subscribe(album => {

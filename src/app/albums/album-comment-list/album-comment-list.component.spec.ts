@@ -73,6 +73,7 @@ describe('AlbumCommentListComponent', () => {
     comment.date = '2017-11-20T21:06:51+0100';
     comment.author = { id: 1, username: 'Toto' };
 
+    spyOn(auth, 'isLoggedIn').and.returnValue(true);
     const spy = spyOn(albumService, 'commentAlbum');
 
     component.album = album;
@@ -185,5 +186,24 @@ describe('AlbumCommentListComponent', () => {
 
     expect(spy).toHaveBeenCalledWith(
       'Une erreur est survenue lors de la suppression du commentaire.', ToastType.Danger, ToastDuration.Medium);
+  }));
+
+  it('should disable comment form if user is not logged in', fakeAsync(() => {
+    const album = new Album();
+    album.id = 1;
+    album.comments = [];
+
+    auth.isLoggedIn = false;
+    component.album = album;
+
+    fixture.detectChanges();
+    tick();
+
+    const sendBtn = fixture.debugElement.query(By.css('.send-btn')).nativeElement;
+    expect(sendBtn.disabled).toEqual(true);
+
+    const textarea = fixture.debugElement.query(By.css('textarea')).nativeElement;
+    expect(textarea.disabled).toEqual(true);
+    expect(textarea.placeholder).toEqual('Connectez vous pour ajouter un commentaire.');
   }));
 });

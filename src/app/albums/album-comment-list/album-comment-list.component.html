@@ -14,5 +14,6 @@
   </tr>
   </tbody>
 </table>
-<textarea class="comment-input" placeholder="Ajouter un commentaire..." [(ngModel)]="commentText"></textarea>
-<button class="btn btn-primary send-btn" (click)="sendComment()">Envoyer</button>
+<textarea class="comment-input" [placeholder]="getPlaceholder()" [(ngModel)]="commentText" [disabled]="!canComment()">
+</textarea>
+<button class="btn btn-primary send-btn" (click)="sendComment()" [disabled]="!canComment()">Envoyer</button>
