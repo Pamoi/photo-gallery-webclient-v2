@@ -10,17 +10,21 @@ import { Album } from '../shared/album.model';
 import { Comment } from '../shared/comment.model';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
+import { CoreModule } from '../../core/core.module';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
+import { Observable } from 'rxjs/Observable';
 
 describe('AlbumCommentListComponent', () => {
   let component: AlbumCommentListComponent;
   let fixture: ComponentFixture<AlbumCommentListComponent>;
   let albumService: AlbumService;
   let auth: AuthService;
+  let toast: ToastService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
-      providers: [AuthService, AlbumService, HttpClient, HttpHandler, AppConfigService],
+      imports: [FormsModule, CoreModule],
+      providers: [AuthService, AlbumService, HttpClient, HttpHandler, AppConfigService, ToastService],
       declarations: [AlbumCommentListComponent]
     })
       .compileComponents();
@@ -31,6 +35,7 @@ describe('AlbumCommentListComponent', () => {
     component = fixture.componentInstance;
     albumService = fixture.debugElement.injector.get(AlbumService);
     auth = fixture.debugElement.injector.get(AuthService);
+    toast = fixture.debugElement.injector.get(ToastService);
   });
 
   it('should create', () => {
@@ -138,5 +143,47 @@ describe('AlbumCommentListComponent', () => {
 
     const btn = fixture.debugElement.query(By.css('.delete-btn'));
     expect(btn).toBeNull();
+  }));
+
+  it('should show toast on comment creation error', fakeAsync(() => {
+    const album = new Album();
+    album.id = 1;
+    album.comments = [];
+
+    spyOn(albumService, 'commentAlbum').and.returnValue(Observable.throw(new Error('error')));
+    const spy = spyOn(toast, 'toast');
+
+    component.album = album;
+    component.commentText = 'Blabla';
+    component.sendComment();
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledWith(
+      'Une erreur est survenue lors de l\'envoi du commentaire.', ToastType.Danger, ToastDuration.Medium);
+  }));
+
+  it('should show toast on comment deletion error', fakeAsync(() => {
+    const album = new Album();
+    album.id = 1;
+    const comment = new Comment();
+    comment.id = 1;
+    comment.text = 'The comment text';
+    comment.date = '2017-11-20T21:06:51+0100';
+    comment.author = { id: 1, username: 'Toto' };
+    album.comments = [comment];
+
+    spyOn(albumService, 'deleteComment').and.returnValue(Observable.throw(new Error('error')));
+    const spy = spyOn(toast, 'toast');
+
+    component.album = album;
+    component.deleteComment(comment);
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledWith(
+      'Une erreur est survenue lors de la suppression du commentaire.', ToastType.Danger, ToastDuration.Medium);
   }));
 });

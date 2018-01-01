@@ -1,0 +1,16 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+
+.toast-container {
+  position: fixed;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  max-width: 1110px;
+  top: 70px;
+}
+
+@include media-breakpoint-down(lg) {
+  .toast-container {
+    padding: 0 10px;
+  }
+}

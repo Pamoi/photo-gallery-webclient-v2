@@ -3,6 +3,7 @@ import { AlbumService } from '../shared/album.service';
 import { Album } from '../shared/album.model';
 import { AuthService } from '../../authentication/shared/auth.service';
 import { Comment } from '../shared/comment.model';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 
 @Component({
   selector: 'app-album-comment-list',
@@ -14,7 +15,7 @@ export class AlbumCommentListComponent {
 
   commentText: string;
 
-  constructor(private albumService: AlbumService, private auth: AuthService) {
+  constructor(private albumService: AlbumService, private auth: AuthService, private toastService: ToastService) {
   }
 
   sendComment(): void {
@@ -22,6 +23,9 @@ export class AlbumCommentListComponent {
       this.albumService.commentAlbum(this.album.id, this.commentText).subscribe(album => {
         this.album = album;
         this.commentText = '';
+      }, () => {
+        this.toastService.toast(
+          'Une erreur est survenue lors de l\'envoi du commentaire.', ToastType.Danger, ToastDuration.Medium);
       });
     }
   }
@@ -38,6 +42,9 @@ export class AlbumCommentListComponent {
     this.albumService.deleteComment(this.album.id, comment.id).subscribe(() => {
       const index = this.album.comments.indexOf(comment);
       this.album.comments.splice(index, 1);
+    }, () => {
+      this.toastService.toast(
+        'Une erreur est survenue lors de la suppression du commentaire.', ToastType.Danger, ToastDuration.Medium);
     });
   }
 }
