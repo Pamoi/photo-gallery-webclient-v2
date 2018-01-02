@@ -8,7 +8,7 @@ import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class AuthService {
-  private static USER_KEY = 'photo-gallery-webclient-v2.user';
+  public static USER_KEY = 'photo-gallery-webclient-v2.user';
 
   /* To avoid dependency cycle AuthInterceptor cannot depend on AuthService as it depends on HttpClient
    * (which in turn depends on all interceptors). As a workaround AuthInterceptor directly reads the token
@@ -63,8 +63,8 @@ export class AuthService {
   logout(): void {
     this.isLoggedIn = false;
     this.user = null;
-    localStorage.setItem(AuthService.USER_KEY, null);
-    localStorage.setItem(AuthService.TOKEN_KEY, null);
+    localStorage.removeItem(AuthService.USER_KEY);
+    localStorage.removeItem(AuthService.TOKEN_KEY);
   }
 
   getUserId(): number {
