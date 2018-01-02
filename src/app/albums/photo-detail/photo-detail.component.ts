@@ -18,6 +18,7 @@ import { Photo } from '../shared/photo.model';
 export class PhotoDetailComponent implements OnInit {
   album: Album;
   photo: Photo;
+  loadingError: boolean;
   private index: number;
 
   constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService) {
@@ -80,8 +81,14 @@ export class PhotoDetailComponent implements OnInit {
 
 
   private getAlbum(): void {
+    this.loadingError = false;
     const id = +this.route.snapshot.params['albumId'];
-    this.albumService.getAlbum(id).subscribe(album => this.setAlbumAndPhoto(album));
+
+    this.albumService.getAlbum(id).subscribe(album => {
+      this.setAlbumAndPhoto(album);
+    }, () => {
+      this.loadingError = true;
+    });
   }
 
   private setAlbumAndPhoto(album: Album): void {

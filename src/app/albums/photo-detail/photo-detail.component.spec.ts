@@ -13,6 +13,7 @@ import { Album } from '../shared/album.model';
 import { Photo } from '../shared/photo.model';
 import { By } from '@angular/platform-browser';
 import { Location } from '@angular/common';
+import { Observable } from 'rxjs/Observable';
 
 const locationStub = {
   back(): void {
@@ -134,6 +135,33 @@ describe('PhotoDetailComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
+  }));
+
+  it('should show error message if loading fails', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    const spy = spyOn(albumService, 'getAlbum').and.returnValue(Observable.throw(new Error('Error')));
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component.loadingError).toEqual(true);
+
+    const msg = fixture.debugElement.query(By.css('.alert-warning'));
+    expect(msg.nativeElement.innerText).toEqual('Erreur lors du chargement de l\'album. Réessayer.');
+
+    spy.and.returnValue(of(album));
+    const link = msg.children[0];
+    link.nativeElement.click();
+
+    tick();
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(component.loadingError).toEqual(false);
+    expect(component.album).toEqual(album);
   }));
 
   describe('nextPhoto()', () => {

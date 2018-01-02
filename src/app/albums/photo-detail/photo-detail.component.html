@@ -1,3 +1,7 @@
+<div class="alert alert-warning top-z-index" *ngIf="loadingError">
+  Erreur lors du chargement de l'album.
+  <span class="alert-link link" (click)="getAlbum()">Réessayer.</span>
+</div>
 <div class="image-frame">
   <app-photo [photo]="photo" type="detail"></app-photo>
 </div>
