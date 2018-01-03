@@ -7,7 +7,16 @@
     <div class="collapse navbar-collapse justify-content-between" id="navbarLinks">
       <div class="navbar-nav">
         <a *ngIf="!auth.isLoggedIn" class="nav-item nav-link" routerLink="/login">Connexion</a>
-        <a *ngIf="auth.isLoggedIn" class="nav-item nav-link" (click)="auth.logout()">Déconnexion</a>
+        <div *ngIf="auth.isLoggedIn" class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{auth.getUsername()}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" routerLink="/account">Mon compte</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item cursor-hover" (click)="auth.logout()">Déconnexion</a>
+          </div>
+        </div>
       </div>
       <form class="form-inline">
         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

@@ -5,7 +5,9 @@ import { AuthInterceptor } from './shared/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AccountComponent } from './account/account.component';
+import { CoreModule } from '../core/core.module';
 
 
 @NgModule({
@@ -13,7 +15,8 @@ import { FormsModule } from '@angular/forms';
     AuthenticationRoutingModule,
     HttpClientModule,
     BrowserModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [
     AuthService,
@@ -22,6 +25,6 @@ import { FormsModule } from '@angular/forms';
       useClass: AuthInterceptor,
       multi: true
     }],
-  declarations: [LoginComponent]
+  declarations: [LoginComponent, AccountComponent]
 })
 export class AuthenticationModule {}

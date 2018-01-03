@@ -8,7 +8,10 @@ body {
   background-color: #fcfcfc;
 }
 
-.link:hover {
+.cursor-hover:hover {
   cursor: pointer;
+}
+
+.underline-hover:hover {
   text-decoration: underline;
 }

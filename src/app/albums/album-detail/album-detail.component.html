@@ -2,7 +2,7 @@
 
 <div class="alert alert-warning" *ngIf="loadingError">
   Erreur lors du chargement de l'album.
-  <span class="alert-link link" (click)="getAlbum()">Réessayer.</span>
+  <span class="alert-link cursor-hover underline-hover" (click)="getAlbum()">Réessayer.</span>
 </div>
 
 <div [hidden]="!album">

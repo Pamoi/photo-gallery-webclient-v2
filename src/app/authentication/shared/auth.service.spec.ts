@@ -76,7 +76,7 @@ describe('AuthService', () => {
           expect(service.isAdmin()).toEqual(true);
         })));
 
-  it('should return bad credentials status on invalid credentials',
+  it('should return bad credentials status on login with invalid credentials',
     async(
       inject([AuthService, AppConfigService, HttpTestingController],
         (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
@@ -91,7 +91,7 @@ describe('AuthService', () => {
           req.error(new ErrorEvent('Error'), { status: 401 });
         })));
 
-  it('should return network error status on other errors',
+  it('should return network error status on login with other errors',
     async(
       inject([AuthService, AppConfigService, HttpTestingController],
         (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
@@ -103,6 +103,53 @@ describe('AuthService', () => {
           const req = httpMock.expectOne('https://mybackend.com/authenticate');
           expect(req.request.method).toEqual('POST');
           expect(req.request.body).toEqual({ username: 'Toto', password: 'password123' });
+          req.error(new ErrorEvent('Error'));
+        })));
+
+  it('should send request on set password',
+    async(
+      inject([AuthService, AppConfigService, HttpTestingController],
+        (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
+
+          spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+          service.setPassword('Toto', 'password123', '12341234').subscribe(
+            status => expect(status).toEqual(LoginStatus.Success));
+
+          const req = httpMock.expectOne('https://mybackend.com/password');
+          expect(req.request.method).toEqual('POST');
+          expect(req.request.body).toEqual({ username: 'Toto', oldPass: 'password123', newPass: '12341234' });
+        })));
+
+  it('should send return bad credentials status on set password with wrong old password',
+    async(
+      inject([AuthService, AppConfigService, HttpTestingController],
+        (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
+
+          spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+          service.setPassword('Toto', 'password123', '12341234').subscribe(
+            status => expect(status).toEqual(LoginStatus.BadCredentials));
+
+          const req = httpMock.expectOne('https://mybackend.com/password');
+          expect(req.request.method).toEqual('POST');
+          expect(req.request.body).toEqual({ username: 'Toto', oldPass: 'password123', newPass: '12341234' });
+          req.error(new ErrorEvent('Error'), { status: 401 });
+        })));
+
+  it('should send return network error status on set password error',
+    async(
+      inject([AuthService, AppConfigService, HttpTestingController],
+        (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
+
+          spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+          service.setPassword('Toto', 'password123', '12341234').subscribe(
+            status => expect(status).toEqual(LoginStatus.NetworkError));
+
+          const req = httpMock.expectOne('https://mybackend.com/password');
+          expect(req.request.method).toEqual('POST');
+          expect(req.request.body).toEqual({ username: 'Toto', oldPass: 'password123', newPass: '12341234' });
           req.error(new ErrorEvent('Error'));
         })));
 

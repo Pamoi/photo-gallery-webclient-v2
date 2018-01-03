@@ -51,12 +51,17 @@ export class AuthService {
 
       return LoginStatus.Success;
     }).pipe(catchError(
-      (error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          return of(LoginStatus.BadCredentials);
-        }
-        return of(LoginStatus.NetworkError);
-      }
+      this.handleAuthError()
+    ));
+  }
+
+  setPassword(username: string, oldPassword: string, newPassword: string): Observable<LoginStatus> {
+    return this.http.post<void>(this.appConfig.getBackendUrl() + '/password', {
+      username: username,
+      oldPass: oldPassword,
+      newPass: newPassword
+    }).map(() => LoginStatus.Success).pipe(catchError(
+      this.handleAuthError()
     ));
   }
 
@@ -97,6 +102,15 @@ export class AuthService {
     }
 
     return '';
+  }
+
+  private handleAuthError(): (HttpErrorResponse) => Observable<LoginStatus> {
+    return (error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        return of(LoginStatus.BadCredentials);
+      }
+      return of(LoginStatus.NetworkError);
+    };
   }
 }
 
