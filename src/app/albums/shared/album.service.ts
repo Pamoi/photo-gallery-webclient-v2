@@ -19,7 +19,15 @@ export class AlbumService {
   getAlbums(page: number): Observable<Album[]> {
     return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list/' + page)
       .pipe(
-        catchError(this.throwError<Album[]>('An error occurred while fetching album list.'))
+        catchError(
+          (error: any): Observable<Album[]> => {
+            if (error.status === 404) {
+              throw new AlbumError(true);
+            } else {
+              throw new Error('An error occurred while fetching album list.');
+            }
+          }
+        )
       );
   }
 
@@ -57,5 +65,11 @@ export class AlbumService {
       console.log(error);
       throw new Error(message);
     };
+  }
+}
+
+export class AlbumError extends Error {
+  constructor(public endReached: boolean) {
+    super();
   }
 }

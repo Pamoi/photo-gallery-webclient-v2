@@ -1,9 +1,10 @@
-<app-spinner *ngIf="loading"></app-spinner>
-
 <div *ngFor="let album of albums">
   <app-album-preview [album]="album"></app-album-preview>
 </div>
+
+<app-spinner *ngIf="loading"></app-spinner>
+
 <div *ngIf="loadingError" class="alert alert-warning">
   Erreur lors du chargement des albums.
-  <span class="alert-link cursor-hover underline-hover" (click)="getAlbums()">Réessayer.</span>
+  <span class="alert-link cursor-hover underline-hover" (click)="getAlbums(page)">Réessayer.</span>
 </div>

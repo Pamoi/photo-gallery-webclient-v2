@@ -61,6 +61,21 @@ describe('AlbumService', () => {
             expect(req.request.method).toEqual('GET');
             req.error(new ErrorEvent('Test Error'));
           })));
+
+    it('should throw AlbumError with endReached set to true on 404',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getAlbums(3).subscribe(
+              albums => fail(),
+              (e) => expect(e.endReached).toEqual(true));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/list/3');
+            expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'), { status: 404 });
+          })));
   });
 
   describe('getAlbum()', () => {

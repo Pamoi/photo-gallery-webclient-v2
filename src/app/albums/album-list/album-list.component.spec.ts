@@ -83,4 +83,27 @@ describe('AlbumListComponent', () => {
     expect(component.loadingError).toEqual(false);
     expect(component.albums).toEqual(albums);
   }));
+
+  it('should fetch next page on scroll', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    const albums = [album];
+    const spy = spyOn(albumService, 'getAlbums').and.returnValue(of(albums));
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledWith(1);
+    expect(component.albums).toEqual(albums);
+
+    component.onScroll();
+
+    fixture.detectChanges();
+    tick();
+
+    expect(spy).toHaveBeenCalledWith(2);
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(component.albums).toEqual([album, album]);
+  }));
 });
