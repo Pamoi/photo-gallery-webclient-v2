@@ -1,0 +1,30 @@
+<h1>Ajouter un album</h1>
+
+<hr>
+
+<form (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="title">Titre</label>
+    <input type="text" class="form-control" id="title" name="title" placeholder="Entrez un titre"
+           minlength="3" required #title="ngModel" [(ngModel)]="album.title"
+           [ngClass]="{'is-invalid': title.invalid && (title.dirty || title.touched)}">
+
+    <div class="invalid-feedback" *ngIf="title.invalid && (title.dirty || title.touched)">
+      <div *ngIf="title.errors.required">
+        Le titre est requis.
+      </div>
+      <div *ngIf="title.errors.minlength">
+        Le titre doit contenir au moins trois caractères.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea class="form-control" id="description" name="description" placeholder="Entrez une description"
+           [(ngModel)]="album.description">
+    </textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Envoyer</button>
+</form>

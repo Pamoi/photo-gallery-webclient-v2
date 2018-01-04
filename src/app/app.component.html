@@ -6,6 +6,7 @@
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarLinks">
       <div class="navbar-nav">
+        <a class="nav-item nav-link" routerLink="/album/upload">Upload</a>
         <a *ngIf="!auth.isLoggedIn" class="nav-item nav-link" routerLink="/login">Connexion</a>
         <div *ngIf="auth.isLoggedIn" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
