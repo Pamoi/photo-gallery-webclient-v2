@@ -12,6 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { User } from '../shared/user.model';
 import { of } from 'rxjs/observable/of';
 import { By } from '@angular/platform-browser';
+import { Observable } from 'rxjs/Observable';
 
 describe('AuthorPickerComponent', () => {
   let component: AuthorPickerComponent;
@@ -138,5 +139,21 @@ describe('AuthorPickerComponent', () => {
 
     expect(component.authors).toEqual([]);
     expect(component.userList).toEqual([titi, geralt, toto]);
+  }));
+
+  it('should display message on user list fetch error', async(() => {
+    const userSpy = spyOn(userService, 'getUsers').and.returnValue(Observable.throw(new Error()));
+
+    fixture.detectChanges();
+
+    expect(userSpy).toHaveBeenCalled();
+    expect(component.userList).toEqual([]);
+
+    const msg = fixture.debugElement.query(By.css('.alert-warning'));
+    expect(msg.nativeElement.innerText)
+      .toEqual('Erreur lors du chargement de la liste des utilisateurs. Réessayer.');
+
+    msg.children[0].nativeElement.click();
+    expect(userSpy).toHaveBeenCalledTimes(2);
   }));
 });
