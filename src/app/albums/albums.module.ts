@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { CoreModule } from '../core/core.module';
 import { AlbumsRoutingModule } from './albums-routing.module';
+import { NgDatepickerModule } from 'ng2-datepicker';
 
 import { AlbumService } from './shared/album.service';
 import { PhotoService } from './shared/photo.service';
@@ -38,7 +39,8 @@ import { UserService } from './shared/user.service';
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    CoreModule
+    CoreModule,
+    NgDatepickerModule
   ],
   providers: [AlbumService, PhotoService, UserService],
 })

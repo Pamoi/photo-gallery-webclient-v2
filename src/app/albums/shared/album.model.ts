@@ -7,6 +7,7 @@ export class Album {
   title: string;
   description: string;
   date: string;
+  dateObject: Date;
   creationDate: string;
   authors: User[];
   comments: Comment[];

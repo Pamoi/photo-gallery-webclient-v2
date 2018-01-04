@@ -2,7 +2,8 @@
 @import '../../../variables';
 
 .name-list {
-  position: fixed;
+  z-index: 9999;
+  position: absolute;
   display: inline-block;
   background-color: white;
   margin-top: 5px;

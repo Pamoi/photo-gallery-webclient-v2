@@ -28,5 +28,10 @@
 
   <app-author-picker [authors]="album.authors"></app-author-picker>
 
-  <button type="submit" class="btn btn-primary">Envoyer</button>
+  <div class="form-group">
+    <label for="date">Date</label>
+    <ng-datepicker id="date" name="date" [(ngModel)]="album.dateObject" [options]="dateOptions"></ng-datepicker>
+  </div>
+
+  <button type="submit" class="btn btn-primary send-btn">Envoyer</button>
 </form>
