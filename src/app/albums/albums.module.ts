@@ -15,9 +15,11 @@ import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 import { PhotoComponent } from './photo/photo.component';
 
 import { AuthorListPipe } from './shared/author-list.pipe';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AlbumCommentListComponent } from './album-comment-list/album-comment-list.component';
 import { AlbumFormComponent } from './album-form/album-form.component';
+import { AuthorPickerComponent } from './author-picker/author-picker.component';
+import { UserService } from './shared/user.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { AlbumFormComponent } from './album-form/album-form.component';
     AuthorListPipe,
     PhotoComponent,
     AlbumCommentListComponent,
-    AlbumFormComponent
+    AlbumFormComponent,
+    AuthorPickerComponent
   ],
   imports: [
     AlbumsRoutingModule,
@@ -37,7 +40,7 @@ import { AlbumFormComponent } from './album-form/album-form.component';
     FormsModule,
     CoreModule
   ],
-  providers: [AlbumService, PhotoService],
+  providers: [AlbumService, PhotoService, UserService],
 })
 export class AlbumsModule {
 }

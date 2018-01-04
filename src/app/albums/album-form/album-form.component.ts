@@ -13,11 +13,11 @@ export class AlbumFormComponent implements OnInit {
 
   ngOnInit() {
     this.album = new Album();
+    this.album.authors = [];
   }
 
   onSubmit(): void {
-    console.log('Title: ' + this.album.title);
-    console.log('Description: ' + this.album.description);
+    console.log(JSON.stringify(this.album));
   }
 
 }

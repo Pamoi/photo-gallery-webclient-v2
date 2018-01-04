@@ -1,0 +1,45 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+.name-list {
+  position: fixed;
+  display: inline-block;
+  background-color: white;
+  margin-top: 5px;
+  padding: 5px 0;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px #d6d6d6;
+}
+
+.name-item {
+  padding: 5px 15px;
+  min-width: 180px;
+}
+
+.name-item:hover {
+  background-color: theme-color("primary");
+  color: white;
+  cursor: pointer;
+}
+
+.user-list {
+  margin-top: 5px;
+}
+
+.user-item {
+  margin-bottom: 5px;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.delete-btn {
+  font-size: 20px;
+  float: right;
+  color: theme-color("danger");
+}
+
+.delete-btn:hover {
+  cursor: pointer;
+}

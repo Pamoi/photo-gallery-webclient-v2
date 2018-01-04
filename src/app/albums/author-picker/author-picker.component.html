@@ -1,0 +1,23 @@
+<div class="form-group">
+  <label for="name">Co-auteurs</label>
+  <input type="text" class="form-control" id="name" name="name" autocomplete="off" placeholder="Entrez un nom"
+         [(ngModel)]="name">
+
+  <div class="name-list" *ngIf="matchingUsers().length > 0">
+    <div class="name-item" *ngFor="let user of matchingUsers()" (click)="selectUser(user)">
+      {{user.username}}
+    </div>
+  </div>
+
+  <div class="user-list">
+    <div class="user-item" *ngFor="let user of authors">
+      {{user.username}}
+      <span class="delete-btn" (click)="deselectUser(user)">&times;</span>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="loadingError">
+    Erreur lors du chargement de la liste des utilisateurs.
+    <span class="alert-link cursor-hover underline-hover" (click)="getUserList()">Réessayer.</span>
+  </div>
+</div>

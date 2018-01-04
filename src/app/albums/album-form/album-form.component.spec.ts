@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AlbumFormComponent } from './album-form.component';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AlbumFormComponent', () => {
   let component: AlbumFormComponent;
@@ -9,8 +11,10 @@ describe('AlbumFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule],
-      declarations: [AlbumFormComponent]
+      imports: [FormsModule, RouterTestingModule],
+      declarations: [AlbumFormComponent],
+      providers: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
