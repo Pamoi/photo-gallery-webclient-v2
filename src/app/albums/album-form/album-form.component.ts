@@ -24,6 +24,7 @@ export class AlbumFormComponent implements OnInit {
   ngOnInit() {
     this.album = new Album();
     this.album.authors = [];
+    this.album.photoFiles = [];
     this.album.dateObject = new Date();
   }
 

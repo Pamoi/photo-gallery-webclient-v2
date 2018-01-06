@@ -1,0 +1,49 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+.dropzone {
+  border: 2px dashed $gray-400;
+  color: $gray-500;
+  background-color: $gray-100;
+  height: 100px;
+  margin: 20px 0;
+}
+
+.dropzone-over {
+  border: 2px dashed theme-color("success");
+  color: theme-color("success");
+  background-color: lighten(theme-color("success"), 55%);
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  vertical-align: center;
+  margin: 20px 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.file-header {
+  font-weight: bold;
+}
+
+.file-item {
+  margin: 10px 0;
+}
+
+#picker {
+  display: flex;
+  justify-content: center;
+}
+
+.picker-text {
+  margin: 10px;
+  align-self: center;
+}
+
+@include media-breakpoint-down(md) {
+  .file-header {
+    display: none;
+  }
+}

@@ -21,6 +21,8 @@ import { AlbumCommentListComponent } from './album-comment-list/album-comment-li
 import { AlbumFormComponent } from './album-form/album-form.component';
 import { AuthorPickerComponent } from './author-picker/author-picker.component';
 import { UserService } from './shared/user.service';
+import { PhotoPickerComponent } from './photo-picker/photo-picker.component';
+import { DragDropDirective } from './shared/drag-drop.directive';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { UserService } from './shared/user.service';
     PhotoComponent,
     AlbumCommentListComponent,
     AlbumFormComponent,
-    AuthorPickerComponent
+    AuthorPickerComponent,
+    PhotoPickerComponent,
+    DragDropDirective
   ],
   imports: [
     AlbumsRoutingModule,

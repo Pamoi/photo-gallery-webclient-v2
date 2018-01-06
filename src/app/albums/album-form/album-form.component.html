@@ -33,5 +33,7 @@
     <ng-datepicker id="date" name="date" [(ngModel)]="album.dateObject" [options]="dateOptions"></ng-datepicker>
   </div>
 
+  <app-photo-picker [files]="album.photoFiles"></app-photo-picker>
+
   <button type="submit" class="btn btn-primary send-btn">Envoyer</button>
 </form>

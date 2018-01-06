@@ -9,6 +9,16 @@ import { of } from 'rxjs/observable/of';
 
 describe('AlbumService', () => {
 
+  const testAlbum = new Album();
+  testAlbum.id = 1;
+  testAlbum.title = 'Album 1';
+  testAlbum.description = 'A brief description';
+  testAlbum.photos = [];
+  testAlbum.comments = [];
+  testAlbum.authors = [];
+  testAlbum.creationDate = '';
+  testAlbum.date = '';
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -25,18 +35,7 @@ describe('AlbumService', () => {
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
-            const testAlbumList: Album[] = [
-              {
-                id: 1,
-                title: 'Album 1',
-                description: 'A brief description',
-                photos: [],
-                comments: [],
-                authors: [],
-                creationDate: '',
-                date: ''
-              }
-            ];
+            const testAlbumList: Album[] = [testAlbum];
 
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
@@ -83,17 +82,6 @@ describe('AlbumService', () => {
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
-            const testAlbum: Album = {
-              id: 1,
-              title: 'Album 1',
-              description: 'A brief description',
-              photos: [],
-              comments: [],
-              authors: [],
-              creationDate: '',
-              date: ''
-            };
-
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
             service.getAlbum(1).subscribe(album => expect(album).toEqual(testAlbum));
@@ -123,17 +111,6 @@ describe('AlbumService', () => {
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
-            const testAlbum: Album = {
-              id: 1,
-              title: 'Album 1',
-              description: 'A brief description',
-              photos: [],
-              comments: [],
-              authors: [],
-              creationDate: '',
-              date: ''
-            };
-
             const text = 'My comment text';
 
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');

@@ -1,0 +1,31 @@
+<div class="form-group">
+
+  <label for="picker">Photos</label>
+  <input #fileButton type="file" class="hidden" multiple>
+
+  <div appDragDrop (onFilesAdded)="addFiles($event)" id="picker" class="form-control">
+    <div class="picker-text">
+      <button class="btn btn-secondary" (click)="selectFiles()">
+        Sélectionner
+      </button>
+      ou déposer des photos.
+    </div>
+  </div>
+
+  <div class="row file-header">
+    <div class="col">Name</div>
+    <div class="col">Size</div>
+    <div class="col"></div>
+  </div>
+
+  <div class="row file-item" *ngFor="let file of files">
+    <div class="col">{{file.name}}</div>
+    <div class="col">{{file.size / 1000000 | number: '1.2-2'}} MB</div>
+    <div class="col">
+      <button class="btn btn-danger" (click)="deleteFile(file)">
+        Supprimer
+      </button>
+    </div>
+  </div>
+
+</div>

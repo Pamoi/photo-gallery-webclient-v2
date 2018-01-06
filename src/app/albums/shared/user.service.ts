@@ -14,7 +14,6 @@ export class UserService {
   getUsers() {
     return this.http.get<User[]>(this.appConfig.getBackendUrl() + '/user/list').pipe(catchError(
       (e: any): Observable<User[]> => {
-        console.log('HTTP error: ' + e);
         throw new Error('Error while fetching users.');
       }
     ));
