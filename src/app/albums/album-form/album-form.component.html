@@ -7,9 +7,9 @@
     <label for="title">Titre</label>
     <input type="text" class="form-control" id="title" name="title" placeholder="Entrez un titre"
            minlength="3" required #title="ngModel" [(ngModel)]="album.title"
-           [ngClass]="{'is-invalid': title.invalid && (title.dirty || title.touched)}">
+           [ngClass]="{'is-invalid': title.invalid && (title.dirty || title.touched || form.submitted)}">
 
-    <div class="invalid-feedback" *ngIf="title.invalid && (title.dirty || title.touched)">
+    <div class="invalid-feedback" *ngIf="title.invalid && (title.dirty || title.touched || form.submitted)">
       <div *ngIf="title.errors.required">
         Le titre est requis.
       </div>
@@ -33,7 +33,20 @@
     <ng-datepicker id="date" name="date" [(ngModel)]="album.dateObject" [options]="dateOptions"></ng-datepicker>
   </div>
 
-  <app-photo-picker [files]="album.photoFiles"></app-photo-picker>
+  <app-photo-picker [uploader]="uploader" [submitted]="form.submitted"></app-photo-picker>
 
-  <button type="submit" class="btn btn-primary send-btn">Envoyer</button>
+  <div class="progress" *ngIf="uploader.isUploading">
+    <div class="progress-bar bg-success" role="progressbar" [style.width]="uploader.progress + '%'"></div>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="error">
+    Une erreur est survenue lors de l'envoi de l'album.
+  </div>
+
+  <div class="alert alert-success" *ngIf="uploader.hasFinished">
+    Envoi terminé.
+    <a class="alert-link" routerLink="/album/{{album.id}}">Voir l'album.</a>
+  </div>
+
+  <button type="submit" class="btn btn-primary send-btn" [disabled]="sent">Envoyer</button>
 </form>

@@ -12,5 +12,4 @@ export class Album {
   authors: User[];
   comments: Comment[];
   photos: Photo[];
-  photoFiles: File[];
 }

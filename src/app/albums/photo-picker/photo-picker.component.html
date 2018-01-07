@@ -5,7 +5,7 @@
 
   <div appDragDrop (onFilesAdded)="addFiles($event)" id="picker" class="form-control">
     <div class="picker-text">
-      <button class="btn btn-secondary" (click)="selectFiles()">
+      <button type="button" class="btn btn-secondary" (click)="selectFiles()" [disabled]="uploader.hasStarted">
         Sélectionner
       </button>
       ou déposer des photos.
@@ -13,18 +13,32 @@
   </div>
 
   <div class="row file-header">
-    <div class="col">Name</div>
-    <div class="col">Size</div>
-    <div class="col"></div>
+    <div class="col">Nom</div>
+    <div class="col">Taille</div>
+    <div class="col">Progrès</div>
+    <div class="col">Suppression</div>
   </div>
 
-  <div class="row file-item" *ngFor="let file of files">
-    <div class="col">{{file.name}}</div>
-    <div class="col">{{file.size / 1000000 | number: '1.2-2'}} MB</div>
-    <div class="col">
-      <button class="btn btn-danger" (click)="deleteFile(file)">
-        Supprimer
-      </button>
+  <hr>
+
+  <div class="file-item-container">
+    <div class="row file-item" *ngFor="let item of uploader.items">
+      <div class="col file-item-inner">{{item.file.name}}</div>
+      <div class="col file-item-inner">{{item.file.size / 1000000 | number: '1.2-2'}} MB</div>
+      <div class="col file-item-inner">
+        <div class="progress">
+          <div class="progress-bar bg-success" role="progressbar" [style.width]="item.progress + '%'"></div>
+        </div>
+      </div>
+      <div class="col file-item-inner">
+        <button type="button" class="btn btn-danger" (click)="uploader.removeItem(item)" [disabled]="uploader.hasStarted">
+          Supprimer
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="uploader.items.length == 0" [class.error-text]="submitted">
+      Aucune photo sélectionnée.
     </div>
   </div>
 

@@ -4,7 +4,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AppConfigService } from '../../core/shared/app-config.service';
 import { AlbumService } from './album.service';
 import { Album } from './album.model';
-import { Comment } from './comment.model';
 import { of } from 'rxjs/observable/of';
 
 describe('AlbumService', () => {
@@ -15,9 +14,10 @@ describe('AlbumService', () => {
   testAlbum.description = 'A brief description';
   testAlbum.photos = [];
   testAlbum.comments = [];
-  testAlbum.authors = [];
+  testAlbum.authors = [{ id: 1, username: 'Toto' }, { id: 12, username: 'Titi' }];
   testAlbum.creationDate = '';
   testAlbum.date = '';
+  testAlbum.dateObject = new Date();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -102,6 +102,43 @@ describe('AlbumService', () => {
 
             const req = httpMock.expectOne('https://mybackend.com/album/1');
             expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
+  describe('postAlbum()', () => {
+    it('should send request to backend and return album',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            const body = {
+              title: testAlbum.title,
+              description: testAlbum.description,
+              date: testAlbum.dateObject.toISOString(),
+              authorsIds: '1,12'
+            };
+
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.postAlbum(testAlbum).subscribe(album => expect(album).toEqual(testAlbum));
+
+            const req = httpMock.expectOne('https://mybackend.com/album');
+            expect(req.request.method).toEqual('POST');
+            expect(req.request.body).toEqual(body);
+            req.flush(testAlbum);
+          })));
+
+    it('should fail on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.postAlbum(testAlbum).subscribe(album => fail('observable should not resolve on failed request'),
+              error => expect(error.message).toEqual('An error occurred while sending album.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album');
+            expect(req.request.method).toEqual('POST');
             req.error(new ErrorEvent('Test Error'));
           })));
   });

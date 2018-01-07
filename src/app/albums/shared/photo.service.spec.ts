@@ -237,4 +237,16 @@ describe('PhotoService', () => {
             req.error(new ErrorEvent('Test Error'));
           })));
   });
+
+  describe('getPhotoUploader()', () => {
+    it('should return configured uploader', inject([AppConfigService, PhotoService],
+      (appConfig: AppConfigService, service: PhotoService) => {
+        spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+        const uploader = service.getPhotoUploader();
+
+        expect(uploader.url).toEqual('https://mybackend.com/photo');
+        expect(uploader.requestFilename).toEqual('photo');
+      }));
+  });
 });

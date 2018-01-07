@@ -5,6 +5,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {

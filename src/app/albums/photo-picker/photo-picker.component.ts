@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Uploader } from '../shared/uploader.class';
 
 @Component({
   selector: 'app-photo-picker',
@@ -6,7 +7,8 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
   styleUrls: ['./photo-picker.component.scss']
 })
 export class PhotoPickerComponent implements OnInit {
-  @Input() files: File[];
+  @Input() uploader: Uploader;
+  @Input() submitted: boolean;
 
   @ViewChild('fileButton') fileButton: ElementRef;
   allowedExtensions = ['jpg', 'jpeg', 'png'];
@@ -27,19 +29,22 @@ export class PhotoPickerComponent implements OnInit {
   }
 
   addFiles(files: FileList): void {
+    if (this.uploader.hasStarted) {
+      return;
+    }
+
+    const validFiles: File[] = [];
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const split = file.name.split('.');
       const ext = split.length > 0 ? split[split.length - 1].toLowerCase() : '';
 
       if (this.allowedExtensions.indexOf(ext) !== -1) {
-        this.files.push(file);
+        validFiles.push(file);
       }
     }
-  }
 
-  deleteFile(file: File): void {
-    const index = this.files.indexOf(file);
-    this.files.splice(index, 1);
+    this.uploader.addFiles(validFiles);
   }
 }

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { never } from 'rxjs/observable/never';
 import { catchError } from 'rxjs/operators';
 
 import { AppConfigService } from '../../core/shared/app-config.service';
@@ -38,6 +36,19 @@ export class AlbumService {
       );
   }
 
+  postAlbum(album: Album): Observable<Album> {
+    const body = {
+      title: album.title,
+      description: album.description,
+      date: album.dateObject.toISOString(),
+      authorsIds: album.authors.map(u => u.id).join(',')
+    };
+
+    return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album', body).pipe(
+      catchError(this.throwError<Album>('An error occurred while sending album.'))
+    );
+  }
+
   commentAlbum(id: number, text: string): Observable<Album> {
     return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album/' + id + '/comment', {
       text: text
@@ -53,16 +64,9 @@ export class AlbumService {
       );
   }
 
-  private returnValue<T>(result: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      return of(result);
-    };
-  }
-
   private throwError<T>(message: string) {
     return (error: any): Observable<T> => {
-      console.log(error);
+      console.error(error);
       throw new Error(message);
     };
   }

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map';
 import { AppConfigService } from '../../core/shared/app-config.service';
 import { Photo } from './photo.model';
 import { catchError } from 'rxjs/operators';
+import { Uploader } from './uploader.class';
 
 @Injectable()
 export class PhotoService {
@@ -30,6 +31,13 @@ export class PhotoService {
 
   getThumbnailPhoto(photo: Photo): Observable<Blob> {
     return this.getFile(this.appConfig.getBackendUrl() + '/photo/' + photo.id + '/thumb');
+  }
+
+  getPhotoUploader(): Uploader {
+    const uploader = new Uploader(this.http, this.appConfig.getBackendUrl() + '/photo');
+    uploader.requestFilename = 'photo';
+
+    return uploader;
   }
 
   private getFile(url: string): Observable<Blob> {
