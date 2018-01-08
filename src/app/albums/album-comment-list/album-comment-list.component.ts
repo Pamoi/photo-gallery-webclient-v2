@@ -53,7 +53,9 @@ export class AlbumCommentListComponent {
   deleteComment(comment: Comment): void {
     this.albumService.deleteComment(this.album.id, comment.id).subscribe(() => {
       const index = this.album.comments.indexOf(comment);
-      this.album.comments.splice(index, 1);
+      if (index >= 0) {
+        this.album.comments.splice(index, 1);
+      }
     }, () => {
       this.toastService.toast(
         'Une erreur est survenue lors de la suppression du commentaire.', ToastType.Danger, ToastDuration.Medium);

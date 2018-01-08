@@ -124,6 +124,25 @@ describe('AlbumCommentListComponent', () => {
     expect(component.album.comments.length).toBe(0);
   }));
 
+  it('should not delete comment when called with unexisting comment', () => {
+    const album = new Album();
+    album.id = 1;
+    const comment = new Comment();
+    comment.id = 1;
+    comment.text = 'The comment text';
+    comment.date = '2017-11-20T21:06:51+0100';
+    comment.author = { id: 1, username: 'Toto' };
+    album.comments = [comment];
+
+    component.album = album;
+
+    fixture.detectChanges();
+
+    component.deleteComment(new Comment());
+
+    expect(component.album.comments.length).toEqual(1);
+  });
+
   it('should not show delete button if user is not author of comment', fakeAsync(() => {
     const album = new Album();
     album.id = 1;

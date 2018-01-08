@@ -149,8 +149,8 @@ describe('Uploader', function () {
       const req = httpMock.expectOne('https://mybackend.com/upload');
       req.flush(null);
 
-      const req = httpMock.expectOne('https://mybackend.com/upload');
-      req.flush(null);
+      const req2 = httpMock.expectOne('https://mybackend.com/upload');
+      req2.flush(null);
 
       expect(uploader.progress).toEqual(100);
       expect(uploader.hasFinished).toEqual(true);

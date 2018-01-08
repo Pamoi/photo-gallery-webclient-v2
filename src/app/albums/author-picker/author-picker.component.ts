@@ -47,14 +47,18 @@ export class AuthorPickerComponent implements OnInit {
 
   selectUser(user: User): void {
     const index = this.userList.indexOf(user);
-    this.userList.splice(index, 1);
-    this.authors.push(user);
-    this.name = '';
+    if (index >= 0) {
+      this.userList.splice(index, 1);
+      this.authors.push(user);
+      this.name = '';
+    }
   }
 
   deselectUser(user: User): void {
     const index = this.authors.indexOf(user);
-    this.authors.splice(index, 1);
-    this.userList.push(user);
+    if (index >= 0) {
+      this.authors.splice(index, 1);
+      this.userList.push(user);
+    }
   }
 }
