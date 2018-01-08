@@ -78,8 +78,8 @@ describe('PhotoPickerComponent', () => {
     expect(container.nativeElement.innerText).toEqual('Aucune photo sélectionnée.');
   });
 
-  it('should show text in red when no photo is selected and form is submitted', () => {
-    component.submitted = true;
+  it('should show text in red when no photo is selected and required = true', () => {
+    component.required = true;
     fixture.detectChanges();
 
     const container = fixture.debugElement.query(By.css('.error-text'));

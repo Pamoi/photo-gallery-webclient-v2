@@ -1,6 +1,6 @@
 <form class="form-inline" (ngSubmit)="onSubmit()">
   <input class="form-control mr-sm-2" type="search" placeholder="Entrez un nom d'ablum" aria-label="Recherche"
-         name="term" [(ngModel)]="term" required>
+         name="term" [(ngModel)]="term" required autocomplete="off">
   <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
     <span class="oi oi-magnifying-glass" title="search"></span>
     Rechercher

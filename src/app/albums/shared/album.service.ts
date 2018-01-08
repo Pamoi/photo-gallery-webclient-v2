@@ -37,16 +37,13 @@ export class AlbumService {
   }
 
   postAlbum(album: Album): Observable<Album> {
-    album.dateObject.setMinutes(album.dateObject.getMinutes() - album.dateObject.getTimezoneOffset());
+    return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album', this.getBody(album)).pipe(
+      catchError(this.throwError<Album>('An error occurred while sending album.'))
+    );
+  }
 
-    const body = {
-      title: album.title,
-      description: album.description,
-      date: album.dateObject.toISOString(),
-      authorsIds: album.authors.map(u => u.id).join(',')
-    };
-
-    return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album', body).pipe(
+  putAlbum(album: Album): Observable<Album> {
+    return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album/' + album.id, this.getBody(album)).pipe(
       catchError(this.throwError<Album>('An error occurred while sending album.'))
     );
   }
@@ -84,6 +81,17 @@ export class AlbumService {
       .pipe(
         catchError(this.throwError<void>('An error occurred while deleting comment.'))
       );
+  }
+
+  private getBody(album: Album): { title: string, description: string, date: string, authorsIds: string } {
+    album.dateObject.setMinutes(album.dateObject.getMinutes() - album.dateObject.getTimezoneOffset());
+
+    return {
+      title: album.title,
+      description: album.description,
+      date: album.dateObject.toISOString(),
+      authorsIds: album.authors.map(u => u.id).join(',')
+    };
   }
 
   private throwError<T>(message: string) {

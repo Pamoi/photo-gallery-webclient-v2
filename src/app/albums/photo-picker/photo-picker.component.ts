@@ -8,7 +8,7 @@ import { Uploader } from '../shared/uploader.class';
 })
 export class PhotoPickerComponent implements OnInit {
   @Input() uploader: Uploader;
-  @Input() submitted: boolean;
+  @Input() required: boolean;
 
   @ViewChild('fileButton') fileButton: ElementRef;
   allowedExtensions = ['jpg', 'jpeg', 'png'];

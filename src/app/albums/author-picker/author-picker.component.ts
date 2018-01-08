@@ -27,14 +27,13 @@ export class AuthorPickerComponent implements OnInit {
 
     this.userService.getUsers().subscribe(users => {
       this.userList = users;
-      // Remove users which already are authors as well as current user from the list of possible co-authors.
-      this.authors.forEach(u => {
-        this.userList = this.userList.filter(u2 => u2.id !== u.id);
-      });
-      this.userList = this.userList.filter(u => u.id !== this.auth.getUserId());
     }, () => {
       this.loadingError = true;
     });
+  }
+
+  getUserId(): number {
+    return this.auth.getUserId();
   }
 
   matchingUsers(): User[] {
@@ -42,23 +41,21 @@ export class AuthorPickerComponent implements OnInit {
       return [];
     }
 
-    return this.userList.filter(u => u.username.toLowerCase().startsWith(this.name.toLowerCase()));
+    return this.userList
+      .filter(u => this.authors.map(v => v.id).indexOf(u.id) === -1)
+      .filter(u => u.id !== this.getUserId())
+      .filter(u => u.username.toLowerCase().startsWith(this.name.toLowerCase()));
   }
 
   selectUser(user: User): void {
-    const index = this.userList.indexOf(user);
-    if (index >= 0) {
-      this.userList.splice(index, 1);
-      this.authors.push(user);
-      this.name = '';
-    }
+    this.authors.push(user);
+    this.name = '';
   }
 
   deselectUser(user: User): void {
     const index = this.authors.indexOf(user);
     if (index >= 0) {
       this.authors.splice(index, 1);
-      this.userList.push(user);
     }
   }
 }

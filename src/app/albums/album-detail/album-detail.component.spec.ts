@@ -109,6 +109,22 @@ describe('AlbumDetailComponent', () => {
     expect(component.album).toEqual(album);
   }));
 
+  it('should show edit button if user is author', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.authors = [{ id: 3, username: 'Toto' }];
+
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    spyOn(auth, 'getUserId').and.returnValue(3);
+    spyOn(auth, 'isLoggedIn').and.returnValue(true);
+
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.queryAll(By.css('.btn-primary'))[1];
+    expect(btn.nativeElement.innerText).toEqual('Modifier ');
+  }));
+
   it('should redirect after album deletion', async(() => {
     const album = new Album();
     album.id = 13;

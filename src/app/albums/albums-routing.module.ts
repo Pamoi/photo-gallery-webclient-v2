@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'album/upload', component: AlbumFormComponent },
   { path: 'album/search/:term', component: AlbumSearchListComponent },
   { path: 'album/:id', component: AlbumDetailComponent },
+  { path: 'album/:id/edit', component: AlbumFormComponent },
   { path: 'album/:albumId/photo/:photoId', component: PhotoDetailComponent }
 ];
 

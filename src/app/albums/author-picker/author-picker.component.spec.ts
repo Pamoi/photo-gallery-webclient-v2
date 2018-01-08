@@ -49,25 +49,50 @@ describe('AuthorPickerComponent', () => {
 
   it('should load user list on create', async(() => {
     const userSpy = spyOn(userService, 'getUsers').and.returnValue(of(sampleUsers));
-    const authSpy = spyOn(auth, 'getUserId').and.returnValue(1);
 
     fixture.detectChanges();
 
     expect(userSpy).toHaveBeenCalled();
+    expect(component.userList).toEqual(sampleUsers);
+  }));
+
+  it('should filter users by name prefix', async(() => {
+    component.authors = [];
+    const userSpy = spyOn(userService, 'getUsers').and.returnValue(of(sampleUsers));
+    const authSpy = spyOn(auth, 'getUserId').and.returnValue(4);
+
+    component.name = 't';
+    fixture.detectChanges();
+
+    expect(userSpy).toHaveBeenCalled();
     expect(authSpy).toHaveBeenCalled();
-    expect(component.userList).toEqual([titi, geralt]);
+    expect(component.matchingUsers()).toEqual([toto, titi]);
   }));
 
   it('should filter out users that are already authors', async(() => {
     component.authors = [{ id: 2, username: 'Titi' }];
     const userSpy = spyOn(userService, 'getUsers').and.returnValue(of(sampleUsers));
-    const authSpy = spyOn(auth, 'getUserId').and.returnValue(1);
+    const authSpy = spyOn(auth, 'getUserId').and.returnValue(4);
 
+    component.name = 't';
     fixture.detectChanges();
 
     expect(userSpy).toHaveBeenCalled();
     expect(authSpy).toHaveBeenCalled();
-    expect(component.userList).toEqual([geralt]);
+    expect(component.matchingUsers()).toEqual([toto]);
+  }));
+
+  it('should filter out connected user', async(() => {
+    component.authors = [];
+    const userSpy = spyOn(userService, 'getUsers').and.returnValue(of(sampleUsers));
+    const authSpy = spyOn(auth, 'getUserId').and.returnValue(2);
+
+    component.name = 't';
+    fixture.detectChanges();
+
+    expect(userSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalled();
+    expect(component.matchingUsers()).toEqual([toto]);
   }));
 
 
@@ -102,12 +127,10 @@ describe('AuthorPickerComponent', () => {
 
     fixture.detectChanges();
 
-    expect(component.userList).toEqual(sampleUsers);
     const names = fixture.debugElement.query(By.css('.name-list'));
     names.children[0].nativeElement.click();
 
     expect(component.authors).toEqual([toto]);
-    expect(component.userList).toEqual([titi, geralt]);
   }));
 
   it('should delete user from author list on delete button click', async(() => {
@@ -138,7 +161,6 @@ describe('AuthorPickerComponent', () => {
     fixture.detectChanges();
 
     expect(component.authors).toEqual([]);
-    expect(component.userList).toEqual([titi, geralt, toto]);
   }));
 
   it('should display message on user list fetch error', async(() => {

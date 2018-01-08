@@ -10,9 +10,11 @@
   </div>
 
   <div class="user-list">
-    <div class="user-item" *ngFor="let user of authors">
-      {{user.username}}
-      <span class="delete-btn" (click)="deselectUser(user)">&times;</span>
+    <div *ngFor="let user of authors">
+      <div *ngIf="user.id != getUserId()" class="user-item">
+        {{user.username}}
+        <span class="delete-btn" (click)="deselectUser(user)">&times;</span>
+      </div>
     </div>
   </div>
 
