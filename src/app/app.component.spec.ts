@@ -6,11 +6,12 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AppConfigService } from './core/shared/app-config.service';
 import { ToastService } from './core/shared/toast.service';
 import { CoreModule } from './core/core.module';
+import { AlbumsModule } from './albums/albums.module';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, CoreModule],
+      imports: [CoreModule, AlbumsModule, RouterTestingModule],
       declarations: [AppComponent],
       providers: [AuthService, HttpClient, HttpHandler, AppConfigService, ToastService]
     }).compileComponents();

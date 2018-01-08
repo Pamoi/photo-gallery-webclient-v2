@@ -49,6 +49,12 @@ export class AlbumService {
     );
   }
 
+  searchAlbum(term: string): Observable<Album[]> {
+    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/search/' + term).pipe(
+      catchError(this.throwError<Album[]>('An error occurred while searching albums.'))
+    );
+  }
+
   commentAlbum(id: number, text: string): Observable<Album> {
     return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album/' + id + '/comment', {
       text: text

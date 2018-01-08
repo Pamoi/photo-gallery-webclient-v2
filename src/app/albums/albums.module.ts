@@ -23,6 +23,8 @@ import { AuthorPickerComponent } from './author-picker/author-picker.component';
 import { UserService } from './shared/user.service';
 import { PhotoPickerComponent } from './photo-picker/photo-picker.component';
 import { DragDropDirective } from './shared/drag-drop.directive';
+import { SearchFormComponent } from './search-form/search-form.component';
+import { AlbumSearchListComponent } from './album-search-list/album-search-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { DragDropDirective } from './shared/drag-drop.directive';
     AlbumFormComponent,
     AuthorPickerComponent,
     PhotoPickerComponent,
-    DragDropDirective
+    DragDropDirective,
+    SearchFormComponent,
+    AlbumSearchListComponent
   ],
   imports: [
     AlbumsRoutingModule,
@@ -45,6 +49,9 @@ import { DragDropDirective } from './shared/drag-drop.directive';
     FormsModule,
     CoreModule,
     NgDatepickerModule
+  ],
+  exports: [
+    SearchFormComponent
   ],
   providers: [AlbumService, PhotoService, UserService],
 })

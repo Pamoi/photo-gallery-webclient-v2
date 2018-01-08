@@ -143,6 +143,36 @@ describe('AlbumService', () => {
           })));
   });
 
+  describe('searchAlbum()', () => {
+    it('should send request to backend and return album list',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+            const albums = [testAlbum];
+
+            service.searchAlbum('my search').subscribe(a => expect(a).toEqual(albums));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/search/my search');
+            expect(req.request.method).toEqual('GET');
+            req.flush(albums);
+          })));
+
+    it('should fail on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.searchAlbum('my term').subscribe(() => fail('observable should not resolve on failed request'),
+              error => expect(error.message).toEqual('An error occurred while searching albums.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/search/my term');
+            expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
   describe('commentAlbum()', () => {
     it('should send request to backend and return album',
       async(
