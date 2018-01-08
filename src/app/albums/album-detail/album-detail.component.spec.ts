@@ -7,17 +7,17 @@ import { AlbumService } from '../shared/album.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorListPipe } from '../shared/author-list.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PhotoComponent } from '../photo/photo.component';
 import { Album } from '../shared/album.model';
 import { of } from 'rxjs/observable/of';
 import { CoreModule } from '../../core/core.module';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import { By } from '@angular/platform-browser';
-import { AlbumCommentListComponent } from '../album-comment-list/album-comment-list.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../authentication/shared/auth.service';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
+import { Photo } from '../shared/photo.model';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
@@ -30,12 +30,13 @@ describe('AlbumDetailComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, CoreModule, FormsModule],
-      declarations: [AlbumDetailComponent, AlbumCommentListComponent, AuthorListPipe, PhotoComponent],
+      declarations: [AlbumDetailComponent, AuthorListPipe],
       providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, AuthService, ToastService, {
         provide: ActivatedRoute, useValue: {
           snapshot: { params: { id: 13 } }
         }
-      }]
+      }],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -154,5 +155,52 @@ describe('AlbumDetailComponent', () => {
     expect(toastSpy)
       .toHaveBeenCalledWith('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
     expect(routerSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should download album on button click', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [new Photo()];
+
+    const url = 'https://download.com/album/123';
+
+    const albumSpy = spyOn(albumService, 'getAlbumDownloadUrl').and.returnValue(of(url));
+    const linkSpy = spyOn(component.downloadLink.nativeElement, 'click');
+
+    component.album = album;
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.query(By.css('.btn-primary'));
+    expect(btn.nativeElement.innerText).toEqual('Télécharger');
+    btn.nativeElement.click();
+
+    expect(albumSpy).toHaveBeenCalledWith(13);
+    expect(component.downloadLink.nativeElement.href).toEqual(url);
+    expect(linkSpy).toHaveBeenCalled();
+  }));
+
+  it('should show toast on download error', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [new Photo()];
+
+
+    const albumSpy = spyOn(albumService, 'getAlbumDownloadUrl')
+      .and.returnValue(Observable.throw(new Error('')));
+    const linkSpy = spyOn(component.downloadLink.nativeElement, 'click');
+    const toastSpy = spyOn(toast, 'toast');
+
+    component.album = album;
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.query(By.css('.btn-primary'));
+    btn.nativeElement.click();
+
+    expect(albumSpy).toHaveBeenCalledWith(13);
+    expect(linkSpy).not.toHaveBeenCalled();
+    expect(toastSpy).toHaveBeenCalledWith('Une erreur est survenue lors du téléchargement de l\'album',
+      ToastType.Danger, ToastDuration.Medium);
   }));
 });

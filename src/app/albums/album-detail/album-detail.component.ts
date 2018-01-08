@@ -24,6 +24,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
 
   @ViewChild('fullWidthContainer') fullWidthContainer: ElementRef;
   @ViewChild('thumbnailContainer') thumbnailContainer: ElementRef;
+  @ViewChild('downloadLink') downloadLink: ElementRef;
 
   constructor(private route: ActivatedRoute, private router: Router, private albumService: AlbumService,
               private toast: ToastService, private auth: AuthService) {}
@@ -70,6 +71,18 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
     }, () => {
       this.toast.toast('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
     });
+  }
+
+  downloadAlbum(): void {
+    if (this.album && this.album.photos.length > 0) {
+      this.albumService.getAlbumDownloadUrl(this.album.id).subscribe(url => {
+        this.downloadLink.nativeElement.href = url;
+        this.downloadLink.nativeElement.click();
+      }, () => {
+        this.toast.toast('Une erreur est survenue lors du téléchargement de l\'album',
+          ToastType.Danger, ToastDuration.Medium);
+      });
+    }
   }
 
   private centerThumbnailContainer(): void {

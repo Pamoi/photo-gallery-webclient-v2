@@ -57,6 +57,14 @@ export class AlbumService {
     );
   }
 
+  getAlbumDownloadUrl(id: number): Observable<string> {
+    return this.http.get<{ token: string }>(this.appConfig.getBackendUrl() + '/album/' + id + '/downloadToken')
+      .map(o => this.appConfig.getBackendUrl() + '/album/' + id + '/download?token=' + o.token)
+      .pipe(
+        catchError(this.throwError<string>('An error occurred while requesting download url.'))
+      );
+  }
+
   searchAlbum(term: string): Observable<Album[]> {
     return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/search/' + term).pipe(
       catchError(this.throwError<Album[]>('An error occurred while searching albums.'))

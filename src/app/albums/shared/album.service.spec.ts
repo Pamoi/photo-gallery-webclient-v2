@@ -205,6 +205,37 @@ describe('AlbumService', () => {
           })));
   });
 
+  describe('getAlbumDownloadUrl()', () => {
+    it('should send request to backend and return url',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+            const token = 'MyToKeN1234';
+
+            service.getAlbumDownloadUrl(33).subscribe(url => expect(url)
+              .toEqual('https://mybackend.com/album/33/download?token=' + token));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/33/downloadToken');
+            expect(req.request.method).toEqual('GET');
+            req.flush({ token: token });
+          })));
+
+    it('should fail on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getAlbumDownloadUrl(33).subscribe(() => fail('observable should not resolve on failed request'),
+              error => expect(error.message).toEqual('An error occurred while requesting download url.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/33/downloadToken');
+            expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
   describe('commentAlbum()', () => {
     it('should send request to backend and return album',
       async(
