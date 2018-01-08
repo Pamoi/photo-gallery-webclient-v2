@@ -1,28 +1,53 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
   <div class="container">
-    <a class="navbar-brand" routerLink="/">Albums</a>
+
+    <a class="navbar-brand" routerLink="/">
+      <span class="oi oi-camera-slr" title="albums"></span>
+      Albums
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse justify-content-between" id="navbarLinks">
       <div class="navbar-nav">
-        <a class="nav-item nav-link" routerLink="/album/upload">Upload</a>
-        <a *ngIf="!auth.isLoggedIn" class="nav-item nav-link" routerLink="/login">Connexion</a>
+
+        <a class="nav-item nav-link" routerLink="/album/upload">
+          <span class="oi oi-cloud-upload" title="upload"></span>
+          Upload
+        </a>
+
+        <a *ngIf="!auth.isLoggedIn" class="nav-item nav-link" routerLink="/login">
+          <span class="oi oi-account-login" title="login"></span>
+          Connexion
+        </a>
+
         <div *ngIf="auth.isLoggedIn" class="nav-item dropdown">
+
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="oi oi-cog" title="account"></span>
             {{auth.getUsername()}}
           </a>
+
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" routerLink="/account">Mon compte</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item cursor-hover" (click)="auth.logout()">Déconnexion</a>
+            <a class="dropdown-item cursor-hover" (click)="auth.logout()">
+              Déconnexion
+            </a>
           </div>
+
         </div>
       </div>
+
       <form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+        <input class="form-control mr-sm-2" type="search" placeholder="Entrez un nom d'ablum" aria-label="Recherche">
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+          <span class="oi oi-magnifying-glass" title="search"></span>
+          Rechercher
+        </button>
       </form>
+
     </div>
   </div>
 </nav>

@@ -39,7 +39,7 @@ describe('PhotoPickerComponent', () => {
     expect(list.children.length).toEqual(4);
     expect(list.children[0].nativeElement.innerText).toEqual('photo.jpg');
     expect(list.children[1].nativeElement.innerText).toEqual('0.00 MB');
-    expect(list.children[3].nativeElement.innerText).toEqual('Supprimer');
+    expect(list.children[3].children[0].nativeElement.className).toEqual('btn btn-danger');
   });
 
   it('should delete file on button press', () => {

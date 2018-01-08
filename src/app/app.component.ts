@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-
-import { AlbumService } from './albums/shared/album.service';
 import { AuthService } from './authentication/shared/auth.service';
 
 @Component({
