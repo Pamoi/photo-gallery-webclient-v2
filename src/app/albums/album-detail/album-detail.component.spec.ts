@@ -4,7 +4,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AlbumDetailComponent } from './album-detail.component';
 import { AlbumService } from '../shared/album.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorListPipe } from '../shared/author-list.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PhotoComponent } from '../photo/photo.component';
@@ -17,17 +17,21 @@ import { By } from '@angular/platform-browser';
 import { AlbumCommentListComponent } from '../album-comment-list/album-comment-list.component';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../authentication/shared/auth.service';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
   let albumService: AlbumService;
+  let auth: AuthService;
+  let toast: ToastService;
+  let router: Router;
   let fixture: ComponentFixture<AlbumDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, CoreModule, FormsModule],
       declarations: [AlbumDetailComponent, AlbumCommentListComponent, AuthorListPipe, PhotoComponent],
-      providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, {
+      providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, AuthService, ToastService, {
         provide: ActivatedRoute, useValue: {
           snapshot: { params: { id: 13 } }
         }
@@ -40,6 +44,9 @@ describe('AlbumDetailComponent', () => {
     fixture = TestBed.createComponent(AlbumDetailComponent);
     component = fixture.componentInstance;
     albumService = fixture.debugElement.injector.get(AlbumService);
+    auth = fixture.debugElement.injector.get(AuthService);
+    toast = fixture.debugElement.injector.get(ToastService);
+    router = fixture.debugElement.injector.get(Router);
   });
 
   it('should create', () => {
@@ -99,5 +106,53 @@ describe('AlbumDetailComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2);
     expect(component.loadingError).toEqual(false);
     expect(component.album).toEqual(album);
+  }));
+
+  it('should redirect after album deletion', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.authors = [{ id: 3, username: 'Toto' }];
+
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    spyOn(auth, 'getUserId').and.returnValue(3);
+    spyOn(auth, 'isLoggedIn').and.returnValue(true);
+
+    const albumSpy = spyOn(albumService, 'deleteAlbum').and.returnValue(of(null));
+    const toastSpy = spyOn(toast, 'toast');
+    const routerSpy = spyOn(router, 'navigateByUrl');
+
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.query(By.css('.btn-danger'));
+    expect(btn.nativeElement.innerText).toEqual('Supprimer');
+    btn.nativeElement.click();
+
+    const btn2 = fixture.debugElement.queryAll(By.css('.btn-danger'))[1];
+    expect(btn2.nativeElement.innerText).toEqual('Supprimer');
+    btn2.nativeElement.click();
+
+    expect(albumSpy).toHaveBeenCalledWith(13);
+    expect(toastSpy).toHaveBeenCalledWith('Album supprimé.', ToastType.Success, ToastDuration.Medium);
+    expect(routerSpy).toHaveBeenCalledWith('/');
+  }));
+
+  it('should display toast on album deletion error', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.authors = [{ id: 3, username: 'Toto' }];
+
+    const albumSpy = spyOn(albumService, 'deleteAlbum').and.returnValue(Observable.throw(new Error('')));
+    const toastSpy = spyOn(toast, 'toast');
+    const routerSpy = spyOn(router, 'navigateByUrl');
+
+    component.album = album;
+    component.deleteAlbum();
+
+    expect(albumSpy).toHaveBeenCalledWith(13);
+    expect(toastSpy)
+      .toHaveBeenCalledWith('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
+    expect(routerSpy).not.toHaveBeenCalled();
   }));
 });

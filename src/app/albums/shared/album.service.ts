@@ -37,6 +37,8 @@ export class AlbumService {
   }
 
   postAlbum(album: Album): Observable<Album> {
+    album.dateObject.setMinutes(album.dateObject.getMinutes() - album.dateObject.getTimezoneOffset());
+
     const body = {
       title: album.title,
       description: album.description,
@@ -46,6 +48,12 @@ export class AlbumService {
 
     return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album', body).pipe(
       catchError(this.throwError<Album>('An error occurred while sending album.'))
+    );
+  }
+
+  deleteAlbum(id: number): Observable<void> {
+    return this.http.delete<void>(this.appConfig.getBackendUrl() + '/album/' + id).pipe(
+      catchError(this.throwError<void>('An error occurred while deleting album.'))
     );
   }
 

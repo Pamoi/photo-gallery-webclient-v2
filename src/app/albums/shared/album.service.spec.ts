@@ -111,10 +111,13 @@ describe('AlbumService', () => {
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            const correctDate = new Date(testAlbum.dateObject);
+            correctDate.setMinutes(correctDate.getMinutes() - correctDate.getTimezoneOffset());
+
             const body = {
               title: testAlbum.title,
               description: testAlbum.description,
-              date: testAlbum.dateObject.toISOString(),
+              date: correctDate.toISOString(),
               authorsIds: '1,12'
             };
 
@@ -139,6 +142,35 @@ describe('AlbumService', () => {
 
             const req = httpMock.expectOne('https://mybackend.com/album');
             expect(req.request.method).toEqual('POST');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
+  describe('deleteAlbum()', () => {
+    it('should send request to backend and return void',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.deleteAlbum(666).subscribe();
+
+            const req = httpMock.expectOne('https://mybackend.com/album/666');
+            expect(req.request.method).toEqual('DELETE');
+            req.flush(of(null));
+          })));
+
+    it('should fail on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.deleteAlbum(666).subscribe(() => fail(),
+              error => expect(error.message).toEqual('An error occurred while deleting album.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/666');
+            expect(req.request.method).toEqual('DELETE');
             req.error(new ErrorEvent('Test Error'));
           })));
   });

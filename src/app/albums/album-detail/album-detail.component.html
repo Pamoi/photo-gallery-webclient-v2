@@ -8,7 +8,14 @@
 <div [hidden]="!album">
   <h1>{{album?.title}} <small>{{album?.authors | authorList}}{{album?.date | date:', le d.M.y'}}</small></h1>
   <p>{{album?.description}}</p>
-  <hr />
+
+  <div>
+    <button *ngIf="isUserAuthor()" type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">
+      <span class="oi oi-trash" title="delete"></span>
+      Supprimer
+    </button>
+  </div>
+  <hr>
 </div>
 
 <div #fullWidthContainer class="full-width">
@@ -22,3 +29,23 @@
 </div>
 
 <app-album-comment-list [album]="album" [hidden]="!album"></app-album-comment-list>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Supprimer l'album</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Toutes les photos seront définitivement supprimées.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteAlbum()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Album } from '../shared/album.model';
 
 import { AlbumService } from '../shared/album.service';
 import { Photo } from '../shared/photo.model';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
+import { AuthService } from '../../authentication/shared/auth.service';
 
 @Component({
   selector: 'app-album-detail',
@@ -23,7 +25,8 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('fullWidthContainer') fullWidthContainer: ElementRef;
   @ViewChild('thumbnailContainer') thumbnailContainer: ElementRef;
 
-  constructor(private route: ActivatedRoute, private albumService: AlbumService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private albumService: AlbumService,
+              private toast: ToastService, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.getAlbum();
@@ -38,6 +41,14 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
     this.centerThumbnailContainer();
   }
 
+  isUserAuthor(): boolean {
+    if (this.album && this.auth.isLoggedIn) {
+      return this.album.authors.filter(u => u.id === this.auth.getUserId()).length > 0;
+    }
+
+    return false;
+  }
+
   getAlbum(): void {
     this.loading = true;
     this.loadingError = false;
@@ -49,6 +60,15 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
     }, () => {
       this.loading = false;
       this.loadingError = true;
+    });
+  }
+
+  deleteAlbum(): void {
+    this.albumService.deleteAlbum(this.album.id).subscribe(() => {
+      this.toast.toast('Album supprimé.', ToastType.Success, ToastDuration.Medium);
+      this.router.navigateByUrl('/');
+    }, () => {
+      this.toast.toast('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
     });
   }
 
