@@ -125,6 +125,40 @@ describe('AlbumDetailComponent', () => {
     expect(btn.nativeElement.innerText).toEqual('Modifier ');
   }));
 
+  it('should show edit button if user is admin', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.authors = [{ id: 3, username: 'Toto' }];
+
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    spyOn(auth, 'getUserId').and.returnValue(44);
+    spyOn(auth, 'isLoggedIn').and.returnValue(true);
+    spyOn(auth, 'isAdmin').and.returnValue(true);
+
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.queryAll(By.css('.btn-primary'))[1];
+    expect(btn.nativeElement.innerText).toEqual('Modifier ');
+  }));
+
+  it('should show delete button if user is admin', async(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.authors = [{ id: 3, username: 'Toto' }];
+
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    spyOn(auth, 'getUserId').and.returnValue(44);
+    spyOn(auth, 'isLoggedIn').and.returnValue(true);
+    spyOn(auth, 'isAdmin').and.returnValue(true);
+
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.query(By.css('.btn-danger'));
+    expect(btn.nativeElement.innerText).toEqual('Supprimer');
+  }));
+
   it('should redirect after album deletion', async(() => {
     const album = new Album();
     album.id = 13;

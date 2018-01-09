@@ -44,6 +44,10 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
 
   isUserAuthor(): boolean {
     if (this.album && this.auth.isLoggedIn) {
+      if (this.auth.isAdmin()) {
+        return true;
+      }
+
       return this.album.authors.filter(u => u.id === this.auth.getUserId()).length > 0;
     }
 
