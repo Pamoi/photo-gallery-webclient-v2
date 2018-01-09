@@ -69,6 +69,25 @@ describe('LoginComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith('/');
   }));
 
+  it('should redirect to AuthService.redirectUrl if it is defined on successful login', fakeAsync(() => {
+    const spy = spyOn(auth, 'login').and.returnValue(of(LoginStatus.Success));
+    auth.redirectUrl = '/admin/private';
+    const routerSpy = spyOn(router, 'navigateByUrl');
+
+    component.username = 'Toto';
+    component.password = '1234';
+
+    const submitBtn = fixture.debugElement.query(By.css('.btn')).nativeElement;
+    submitBtn.click();
+
+    tick();
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledWith('Toto', '1234');
+    expect(routerSpy).toHaveBeenCalledWith('/admin/private');
+    expect(auth.redirectUrl).toBeUndefined();
+  }));
+
   it('should display message on invalid credentials', fakeAsync(() => {
     const spy = spyOn(auth, 'login').and.returnValue(of(LoginStatus.BadCredentials));
     const routerSpy = spyOn(router, 'navigateByUrl');

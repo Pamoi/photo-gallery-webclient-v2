@@ -14,7 +14,7 @@ import { By } from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
 import { never } from 'rxjs/observable/never';
-import { NgDatepickerModule } from 'ng2-datepicker/index';
+import { NgDatepickerModule } from 'ng2-datepicker';
 
 describe('AlbumFormComponent', () => {
   const fakeRoute = {

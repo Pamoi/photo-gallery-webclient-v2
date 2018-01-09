@@ -7,7 +7,7 @@ import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountComponent } from './account/account.component';
-import { CoreModule } from '../core/core.module';
+import { AuthGuard } from './shared/auth-guard.service';
 
 
 @NgModule({
@@ -20,6 +20,7 @@ import { CoreModule } from '../core/core.module';
   ],
   providers: [
     AuthService,
+    AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

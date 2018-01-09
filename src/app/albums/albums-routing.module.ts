@@ -6,13 +6,14 @@ import { AlbumDetailComponent } from './album-detail/album-detail.component';
 import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 import { AlbumFormComponent } from './album-form/album-form.component';
 import { AlbumSearchListComponent } from './album-search-list/album-search-list.component';
+import { AuthGuard } from '../authentication/shared/auth-guard.service';
 
 const routes: Routes = [
   { path: '', component: AlbumListComponent },
-  { path: 'album/upload', component: AlbumFormComponent },
+  { path: 'album/upload', component: AlbumFormComponent, canActivate: [AuthGuard] },
   { path: 'album/search/:term', component: AlbumSearchListComponent },
   { path: 'album/:id', component: AlbumDetailComponent },
-  { path: 'album/:id/edit', component: AlbumFormComponent },
+  { path: 'album/:id/edit', component: AlbumFormComponent, canActivate: [AuthGuard] },
   { path: 'album/:albumId/photo/:photoId', component: PhotoDetailComponent }
 ];
 

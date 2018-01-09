@@ -25,7 +25,10 @@ export class LoginComponent {
       this.status = status;
 
       if (this.status === LoginStatus.Success) {
-        this.router.navigateByUrl('/');
+        const url = this.auth.redirectUrl ? this.auth.redirectUrl : '/';
+        this.auth.redirectUrl = undefined;
+
+        this.router.navigateByUrl(url);
       }
     });
   }

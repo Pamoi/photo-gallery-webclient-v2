@@ -17,8 +17,10 @@ export class AuthService {
    * This has to be taken in consideration if replacing the localStorage based implementation. */
   public static TOKEN_KEY = 'photo-gallery-webclient-v2.token';
 
-  private user: AuthUser;
   public isLoggedIn: boolean;
+  public redirectUrl: string;
+
+  private user: AuthUser;
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) {
     const userString = localStorage.getItem(AuthService.USER_KEY);
