@@ -1,7 +1,7 @@
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ToastComponent } from './toast.component';
-import { ToastDuration, ToastService, ToastType } from '../shared/toast.service';
+import { ToastService, ToastType } from '../shared/toast.service';
 import { By } from '@angular/platform-browser';
 
 describe('ToastComponent', () => {
