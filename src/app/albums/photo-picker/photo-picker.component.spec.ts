@@ -36,10 +36,10 @@ describe('PhotoPickerComponent', () => {
 
     expect(component.uploader.items.length).toEqual(1);
     const list = fixture.debugElement.query(By.css('.file-item'));
-    expect(list.children.length).toEqual(4);
+    expect(list.children.length).toEqual(5);
     expect(list.children[0].nativeElement.innerText).toEqual('photo.jpg');
     expect(list.children[1].nativeElement.innerText).toEqual('0.00 MB');
-    expect(list.children[3].children[0].nativeElement.className).toEqual('btn btn-danger');
+    expect(list.children[4].children[0].nativeElement.className).toEqual('btn btn-danger');
   });
 
   it('should delete file on button press', () => {
@@ -49,16 +49,14 @@ describe('PhotoPickerComponent', () => {
     component.addFiles(files);
     fixture.detectChanges();
 
-    const list = fixture.debugElement.query(By.css('.file-item'));
-    expect(list.children.length).toEqual(4);
     const btn = fixture.debugElement.query(By.css('.btn-danger'));
     btn.nativeElement.click();
 
     fixture.detectChanges();
 
     expect(component.uploader.items.length).toEqual(0);
-    const list2 = fixture.debugElement.query(By.css('.file-item'));
-    expect(list2).toBeNull();
+    const list = fixture.debugElement.query(By.css('.file-item'));
+    expect(list).toBeNull();
   });
 
   it('should disable button when upload started', () => {

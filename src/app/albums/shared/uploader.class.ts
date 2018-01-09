@@ -110,7 +110,7 @@ export class UploadItem {
   }
 }
 
-export const enum UploadStatus {
+export enum UploadStatus {
   Ready,
   Uploading,
   Error,

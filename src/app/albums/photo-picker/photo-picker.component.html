@@ -13,24 +13,32 @@
   </div>
 
   <div class="row file-header">
-    <div class="col">Nom</div>
-    <div class="col">Taille</div>
-    <div class="col">Progrès</div>
-    <div class="col">Suppression</div>
+    <div class="col-lg-2">Nom</div>
+    <div class="col-lg-2">Taille</div>
+    <div class="col-lg-2">Statut</div>
+    <div class="col-lg-4">Progrès</div>
+    <div class="col-lg-2">Suppression</div>
   </div>
 
   <hr>
 
   <div class="file-item-container">
     <div class="row file-item" *ngFor="let item of uploader.items">
-      <div class="col file-item-inner">{{item.file.name}}</div>
-      <div class="col file-item-inner">{{item.file.size / 1000000 | number: '1.2-2'}} MB</div>
-      <div class="col file-item-inner">
+      <div class="col-lg-2 file-item-inner">{{item.file.name}}</div>
+      <div class="col-lg-2 file-item-inner">{{item.file.size / 1000000 | number: '1.2-2'}} MB</div>
+      <div class="col-lg-2 file-item-inner">
+        <span *ngIf="item.status == US.Ready" class="oi oi-paperclip" title="ready"></span>
+        <span *ngIf="item.status == US.Uploading" class="oi oi-cloud-upload" title="ready"></span>
+        <span *ngIf="item.status == US.Success" class="oi oi-check" title="ready"></span>
+        <span *ngIf="item.status == US.Error" class="oi oi-x" title="ready"></span>
+      </div>
+      <div class="col-lg-4 file-item-inner">
         <div class="progress">
-          <div class="progress-bar bg-success" role="progressbar" [style.width]="item.progress + '%'"></div>
+          <div class="progress-bar bg-success" role="progressbar" [class.bg-danger]="item.status == US.Error"
+               [style.width]="item.progress + '%'"></div>
         </div>
       </div>
-      <div class="col file-item-inner">
+      <div class="col-lg-2 file-item-inner">
         <button type="button" class="btn btn-danger" (click)="uploader.removeItem(item)" [disabled]="uploader.hasStarted">
           <span class="oi oi-trash" title="delete"></span>
         </button>

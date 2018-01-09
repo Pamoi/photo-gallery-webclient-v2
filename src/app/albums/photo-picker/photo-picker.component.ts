@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Uploader } from '../shared/uploader.class';
+import { Uploader, UploadStatus } from '../shared/uploader.class';
 
 @Component({
   selector: 'app-photo-picker',
@@ -12,6 +12,8 @@ export class PhotoPickerComponent implements OnInit {
 
   @ViewChild('fileButton') fileButton: ElementRef;
   allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+  US = UploadStatus;
 
   constructor() {
   }
