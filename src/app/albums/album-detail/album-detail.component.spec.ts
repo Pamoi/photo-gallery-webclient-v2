@@ -68,6 +68,34 @@ describe('AlbumDetailComponent', () => {
     expect(component.album).toEqual(album);
   }));
 
+  it('should show message if the album does not contain photos', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [];
+    const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
+    fixture.detectChanges();
+    tick();
+
+    const msg = fixture.debugElement.query(By.css('#noPhotoMsg'));
+    expect(msg.nativeElement.innerText).toEqual('Cet album ne contient aucune photo.');
+  }));
+
+  it('should not show message if the album contains photos', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [new Photo()];
+    const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
+    fixture.detectChanges();
+    tick();
+
+    const msg = fixture.debugElement.query(By.css('#noPhotoMsg'));
+    expect(msg).toBeNull();
+  }));
+
   it('should center the photo thumbnails', () => {
     fixture.detectChanges();
 
