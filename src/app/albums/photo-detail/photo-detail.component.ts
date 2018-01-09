@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AlbumService } from '../shared/album.service';
 
@@ -21,7 +21,8 @@ export class PhotoDetailComponent implements OnInit {
   loadingError: boolean;
   private index: number;
 
-  constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService) {
+  constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -59,7 +60,11 @@ export class PhotoDetailComponent implements OnInit {
   }
 
   close(): void {
-    this.location.back();
+    if (this.album) {
+      this.router.navigateByUrl('/album/' + this.album.id);
+    } else {
+      this.location.back();
+    }
   }
 
   @HostListener('document:keydown', ['$event'])
