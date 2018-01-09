@@ -36,11 +36,29 @@ describe('ToastComponent', () => {
     fixture.detectChanges();
 
     const alert = fixture.debugElement.query(By.css('.alert-success')).nativeElement;
-    expect(alert.innerText).toEqual(msg);
+    expect(alert.innerText).toEqual(msg + ' ×');
 
     tick(2);
     fixture.detectChanges();
 
     expect(fixture.debugElement.query(By.css('.alert'))).toBeNull();
+  }));
+
+  it('should delete toast on button click', fakeAsync(() => {
+    const msg = 'My toast message';
+    toastService.toast(msg, ToastType.Success, 5);
+
+    tick();
+    fixture.detectChanges();
+
+    const btn = fixture.debugElement.query(By.css('.close')).nativeElement;
+    btn.click();
+
+    tick(1);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.alert'))).toBeNull();
+
+    tick(5);
   }));
 });

@@ -15,11 +15,17 @@ export class ToastComponent implements OnInit {
     this.toastService.getToasts().subscribe(toast => this.displayToast(toast));
   }
 
+  deleteToast(toast: Toast): void {
+    const index = this.toasts.indexOf(toast);
+    if (index >= 0) {
+      this.toasts.splice(index, 1);
+    }
+  }
+
   private displayToast(toast: Toast): void {
     this.toasts.push(toast);
     setTimeout(() => {
-      const index = this.toasts.indexOf(toast);
-      this.toasts.splice(index, 1);
+      this.deleteToast(toast);
     }, toast.duration);
   }
 }

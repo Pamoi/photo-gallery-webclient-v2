@@ -5,15 +5,8 @@
   margin: 0 auto;
   left: 0;
   right: 0;
-  max-width: 1110px;
   top: 70px;
   z-index: 10001;
-}
-
-@include media-breakpoint-down(lg) {
-  .toast-container {
-    padding: 0 10px;
-  }
 }
 
 .shadowed {

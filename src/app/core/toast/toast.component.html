@@ -1,5 +1,8 @@
-<div class="toast-container">
+<div class="container toast-container">
   <div *ngFor="let toast of toasts" [class]="'shadowed alert alert-' + toast.type" role="alert">
     {{toast.message}}
+    <button type="button" class="close" (click)="deleteToast(toast)">
+      &times;
+    </button>
   </div>
 </div>
