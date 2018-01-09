@@ -1,5 +1,5 @@
 <div class="toast-container">
-  <div *ngFor="let toast of toasts" [class]="'alert alert-' + toast.type" role="alert">
+  <div *ngFor="let toast of toasts" [class]="'shadowed alert alert-' + toast.type" role="alert">
     {{toast.message}}
   </div>
 </div>
