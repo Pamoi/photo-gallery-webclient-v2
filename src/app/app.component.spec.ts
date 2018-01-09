@@ -7,11 +7,12 @@ import { AppConfigService } from './core/shared/app-config.service';
 import { ToastService } from './core/shared/toast.service';
 import { CoreModule } from './core/core.module';
 import { AlbumsModule } from './albums/albums.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [CoreModule, AlbumsModule, RouterTestingModule],
+      imports: [CoreModule, AlbumsModule, AuthenticationModule, RouterTestingModule],
       declarations: [AppComponent],
       providers: [AuthService, HttpClient, HttpHandler, AppConfigService, ToastService]
     }).compileComponents();

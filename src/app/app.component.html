@@ -17,27 +17,7 @@
           Upload
         </a>
 
-        <a *ngIf="!auth.isLoggedIn" class="nav-item nav-link" routerLink="/login">
-          <span class="oi oi-account-login" title="login"></span>
-          Connexion
-        </a>
-
-        <div *ngIf="auth.isLoggedIn" class="nav-item dropdown">
-
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="oi oi-cog" title="account"></span>
-            {{auth.getUsername()}}
-          </a>
-
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" routerLink="/account">Mon compte</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item cursor-hover" (click)="auth.logout()">
-              Déconnexion
-            </a>
-          </div>
-
-        </div>
+        <app-login-button></app-login-button>
       </div>
 
       <app-search-form></app-search-form>

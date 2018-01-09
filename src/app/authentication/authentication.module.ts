@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountComponent } from './account/account.component';
 import { AuthGuard } from './shared/auth-guard.service';
+import { LoginButtonComponent } from './login-button/login-button.component';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { AuthGuard } from './shared/auth-guard.service';
       useClass: AuthInterceptor,
       multi: true
     }],
-  declarations: [LoginComponent, AccountComponent]
+  declarations: [LoginComponent, AccountComponent, LoginButtonComponent],
+  exports: [LoginButtonComponent]
 })
 export class AuthenticationModule {}
