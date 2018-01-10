@@ -67,6 +67,18 @@ describe('PhotoDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set body background color to black', () => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
+    fixture.detectChanges();
+    expect(document.body.style.backgroundColor).toEqual('rgb(0, 0, 0)');
+
+    component.ngOnDestroy();
+    expect(document.body.style.backgroundColor).toEqual('');
+  });
+
   it('should query album on creation', fakeAsync(() => {
     const album = new Album();
     album.photos = [];

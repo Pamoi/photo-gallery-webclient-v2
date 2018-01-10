@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,7 +15,7 @@ import { Photo } from '../shared/photo.model';
   providers: [Location]
 })
 
-export class PhotoDetailComponent implements OnInit {
+export class PhotoDetailComponent implements OnInit, OnDestroy {
   album: Album;
   photo: Photo;
   loadingError: boolean;
@@ -27,6 +27,11 @@ export class PhotoDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAlbum();
+    document.body.style.backgroundColor = '#000000';
+  }
+
+  ngOnDestroy() {
+    document.body.style.backgroundColor = '';
   }
 
   nextPhoto(): void {
