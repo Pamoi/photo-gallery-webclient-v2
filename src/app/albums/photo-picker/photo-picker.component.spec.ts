@@ -4,6 +4,7 @@ import { PhotoPickerComponent } from './photo-picker.component';
 import { DragDropDirective } from '../shared/drag-drop.directive';
 import { By } from '@angular/platform-browser';
 import { Uploader } from '../shared/uploader.class';
+import { PhotoFilePreviewComponent } from '../photo-file-preview/photo-file-preview.component';
 
 describe('PhotoPickerComponent', () => {
   let component: PhotoPickerComponent;
@@ -11,7 +12,7 @@ describe('PhotoPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PhotoPickerComponent, DragDropDirective]
+      declarations: [PhotoPickerComponent, DragDropDirective, PhotoFilePreviewComponent]
     })
       .compileComponents();
   }));
@@ -36,10 +37,10 @@ describe('PhotoPickerComponent', () => {
 
     expect(component.uploader.items.length).toEqual(1);
     const list = fixture.debugElement.query(By.css('.file-item'));
-    expect(list.children.length).toEqual(5);
-    expect(list.children[0].nativeElement.innerText).toEqual('photo.jpg');
-    expect(list.children[1].nativeElement.innerText).toEqual('0.00 MB');
-    expect(list.children[4].children[0].nativeElement.className).toEqual('btn btn-danger');
+    expect(list.children.length).toEqual(6);
+    expect(list.children[1].nativeElement.innerText).toEqual('photo.jpg');
+    expect(list.children[2].nativeElement.innerText).toEqual('0.00 MB');
+    expect(list.children[5].children[0].nativeElement.className).toEqual('btn btn-danger');
   });
 
   it('should delete file on button press', () => {
