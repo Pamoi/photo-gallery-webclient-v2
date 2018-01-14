@@ -1,7 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'variables';
 @import '../node_modules/bootstrap/scss/bootstrap';
-@import '../node_modules/open-iconic/font/css/open-iconic-bootstrap.css';
+
+/* Set icon font path relative to this file */
+$icon-font-path: '../node_modules/open-iconic/font/fonts/';
+@import '../node_modules/open-iconic/font/css/open-iconic-bootstrap.scss';
 
 /* Make room for the static navbar */
 body {
