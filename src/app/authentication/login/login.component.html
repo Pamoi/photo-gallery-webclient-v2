@@ -17,5 +17,8 @@
   <div *ngIf="status === LS.NetworkError" class="alert alert-warning">
     Impossible de contacter le serveur distant.
   </div>
-  <button type="submit" class="btn btn-primary">Connexion</button>
+  <button type="submit" class="btn btn-primary">
+    Connexion
+    <app-spinner *ngIf="loading" [type]="'button'"></app-spinner>
+  </button>
 </form>

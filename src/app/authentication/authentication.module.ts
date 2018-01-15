@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountComponent } from './account/account.component';
 import { AuthGuard } from './shared/auth-guard.service';
 import { LoginButtonComponent } from './login-button/login-button.component';
+import { CoreModule } from '../core/core.module';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { LoginButtonComponent } from './login-button/login-button.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    CoreModule
   ],
   providers: [
     AuthService,

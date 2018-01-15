@@ -16,4 +16,7 @@
 </table>
 <textarea class="comment-input" [placeholder]="getPlaceholder()" [(ngModel)]="commentText" [disabled]="!canComment()">
 </textarea>
-<button class="btn btn-primary send-btn" (click)="sendComment()" [disabled]="!canComment()">Envoyer</button>
+<button class="btn btn-primary send-btn" (click)="sendComment()" [disabled]="!canComment()">
+  Envoyer
+  <app-spinner *ngIf="loading" [type]="'button'"></app-spinner>
+</button>

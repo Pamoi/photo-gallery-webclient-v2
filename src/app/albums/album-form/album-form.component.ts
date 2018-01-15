@@ -18,8 +18,9 @@ export class AlbumFormComponent implements OnInit {
   album: Album;
   uploader: Uploader;
   error: boolean;
+  sending = false;
   sent = false;
-  loading: boolean;
+  loading = false;
   isModification = false;
 
   @ViewChild(NgForm) form: NgForm;
@@ -60,20 +61,30 @@ export class AlbumFormComponent implements OnInit {
       return;
     }
 
+    this.sending = true;
+
     if (this.isModification) {
       this.albumService.putAlbum(this.album).subscribe(() => {
+          this.sending = false;
           this.sent = true;
           this.sendPhotos();
         },
-        () => this.error = true
+        () => {
+          this.error = true;
+          this.sending = false;
+        }
       );
     } else {
       this.albumService.postAlbum(this.album).subscribe(album => {
+          this.sending = false;
           this.sent = true;
           this.album.id = album.id;
           this.sendPhotos();
         },
-        () => this.error = true
+        () => {
+          this.error = true;
+          this.sending = false;
+        }
       );
     }
   }

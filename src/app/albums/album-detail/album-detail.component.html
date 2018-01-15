@@ -54,8 +54,11 @@
         Toutes les photos seront définitivement supprimées.
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteAlbum()">Supprimer</button>
+        <button type="button" #cancelBtn class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-danger" (click)="deleteAlbum()">
+          Supprimer
+          <app-spinner *ngIf="suppressing" [type]="'button'"></app-spinner>
+        </button>
       </div>
     </div>
   </div>

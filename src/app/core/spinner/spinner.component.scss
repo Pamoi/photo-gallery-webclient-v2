@@ -1,7 +1,20 @@
-.sk-fading-circle {
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+.page {
   margin: 100px auto;
   width: 40px;
   height: 40px;
+}
+
+.button {
+  display: inline-block;
+  margin: 0 0 0 5px;
+  height: 15px;
+  width: 15px;
+}
+
+.sk-fading-circle {
   position: relative;
 }
 
@@ -19,11 +32,19 @@
   margin: 0 auto;
   width: 15%;
   height: 15%;
-  background-color: #333;
   border-radius: 100%;
   -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
   animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;
 }
+
+.page .sk-circle:before {
+  background-color: #333;
+}
+
+.button .sk-circle:before {
+  background-color: gray("100");
+}
+
 .sk-fading-circle .sk-circle2 {
   -webkit-transform: rotate(30deg);
   -ms-transform: rotate(30deg);

@@ -7,6 +7,7 @@ import { AuthService, LoginStatus } from '../shared/auth.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
+import { CoreModule } from '../../core/core.module';
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
@@ -15,7 +16,7 @@ describe('AccountComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule],
+      imports: [FormsModule, ReactiveFormsModule, CoreModule],
       providers: [AuthService, AppConfigService, HttpClient, HttpHandler],
       declarations: [AccountComponent]
     })

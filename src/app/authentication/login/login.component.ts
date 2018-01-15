@@ -11,6 +11,7 @@ export class LoginComponent {
   username: string;
   password: string;
   status: LoginStatus = LoginStatus.Success;
+  loading = false;
 
   // Expose enum to template
   LS = LoginStatus;
@@ -20,9 +21,11 @@ export class LoginComponent {
 
   onSubmit(): void {
     this.status = LoginStatus.Success;
+    this.loading = true;
 
     this.auth.login(this.username, this.password).subscribe(status => {
       this.status = status;
+      this.loading = false;
 
       if (this.status === LoginStatus.Success) {
         const url = this.auth.redirectUrl ? this.auth.redirectUrl : '/';

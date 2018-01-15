@@ -52,5 +52,8 @@
     <a class="alert-link" routerLink="/album/{{album.id}}">Voir l'album.</a>
   </div>
 
-  <button type="submit" class="btn btn-primary send-btn" [disabled]="sent">Envoyer</button>
+  <button type="submit" class="btn btn-primary send-btn" [disabled]="sent">
+    Envoyer
+    <app-spinner *ngIf="sending" [type]="'button'"></app-spinner>
+  </button>
 </form>

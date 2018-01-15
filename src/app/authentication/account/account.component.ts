@@ -15,6 +15,7 @@ export class AccountComponent implements OnInit {
   newPass: string;
   confirmPass: string;
   status: LoginStatus = null;
+  loading = false;
   passwordForm: FormGroup;
 
   constructor(private auth: AuthService) {
@@ -55,7 +56,10 @@ export class AccountComponent implements OnInit {
   onSubmit(): void {
     if (this.passwordForm.valid && this.new.value === this.confirm.value && this.isLoggedIn()) {
       this.status = null;
+      this.loading = true;
+
       this.auth.setPassword(this.auth.getUsername(), this.old.value, this.new.value).subscribe(status => {
+        this.loading = false;
         this.status = status;
       });
     }

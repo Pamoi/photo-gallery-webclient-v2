@@ -1,10 +1,9 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Album } from '../shared/album.model';
 
 import { AlbumService } from '../shared/album.service';
-import { Photo } from '../shared/photo.model';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 import { AuthService } from '../../authentication/shared/auth.service';
 
@@ -18,6 +17,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   album: Album;
   loading = false;
   loadingError = false;
+  suppressing = false;
 
   // Must be equal to the total width (including margins) of thumbnail element.
   thumbnailWidth = 202;
@@ -25,6 +25,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('fullWidthContainer') fullWidthContainer: ElementRef;
   @ViewChild('thumbnailContainer') thumbnailContainer: ElementRef;
   @ViewChild('downloadLink') downloadLink: ElementRef;
+  @ViewChild('cancelBtn') cancelBtn: ElementRef;
 
   constructor(private route: ActivatedRoute, private router: Router, private albumService: AlbumService,
               private toast: ToastService, private auth: AuthService) {}
@@ -69,10 +70,18 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   }
 
   deleteAlbum(): void {
+    this.suppressing = true;
+
     this.albumService.deleteAlbum(this.album.id).subscribe(() => {
+      this.suppressing = false;
+      this.cancelBtn.nativeElement.click();
+
       this.toast.toast('Album supprimé.', ToastType.Success, ToastDuration.Medium);
       this.router.navigateByUrl('/');
     }, () => {
+      this.suppressing = false;
+      this.cancelBtn.nativeElement.click();
+
       this.toast.toast('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
     });
   }

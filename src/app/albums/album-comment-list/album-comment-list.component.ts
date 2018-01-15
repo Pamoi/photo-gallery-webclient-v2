@@ -14,6 +14,7 @@ export class AlbumCommentListComponent {
   @Input() album: Album;
 
   commentText: string;
+  loading = false;
 
   constructor(private albumService: AlbumService, private auth: AuthService, private toastService: ToastService) {
   }
@@ -32,10 +33,14 @@ export class AlbumCommentListComponent {
 
   sendComment(): void {
     if (this.album && this.commentText.length > 0) {
+      this.loading = true;
+
       this.albumService.commentAlbum(this.album.id, this.commentText).subscribe(album => {
+        this.loading = false;
         this.album = album;
         this.commentText = '';
       }, () => {
+        this.loading = false;
         this.toastService.toast(
           'Une erreur est survenue lors de l\'envoi du commentaire.', ToastType.Danger, ToastDuration.Medium);
       });

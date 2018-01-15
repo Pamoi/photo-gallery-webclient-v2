@@ -56,6 +56,9 @@
     <div *ngIf="status === LS.Success" class="alert alert-success">
       Mot de passe changé avec succès.
     </div>
-    <button type="submit" class="btn btn-primary send-btn">Envoyer</button>
+    <button type="submit" class="btn btn-primary send-btn">
+      Envoyer
+      <app-spinner *ngIf="loading" [type]="'button'"></app-spinner>
+    </button>
   </form>
 </div>

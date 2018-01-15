@@ -9,6 +9,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
 import { Router } from '@angular/router';
+import { CoreModule } from '../../core/core.module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -18,7 +19,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, FormsModule],
+      imports: [RouterTestingModule, FormsModule, CoreModule],
       declarations: [LoginComponent],
       providers: [AuthService, HttpClient, HttpHandler, AppConfigService]
     })
