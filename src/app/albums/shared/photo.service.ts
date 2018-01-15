@@ -13,7 +13,6 @@ import { Uploader } from './uploader.class';
 
 @Injectable()
 export class PhotoService {
-  private blobCache: { [url: string]: Blob } = {};
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) { }
 
@@ -41,12 +40,7 @@ export class PhotoService {
   }
 
   private getFile(url: string): Observable<Blob> {
-    if (this.blobCache[url]) {
-      return of(this.blobCache[url]);
-    }
-
     return this.http.get(url, { responseType: 'blob' }).map(blob => {
-      this.blobCache[url] = blob;
       return blob;
     }).pipe(
       catchError(this.handleError(null))

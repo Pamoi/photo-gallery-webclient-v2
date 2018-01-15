@@ -65,16 +65,12 @@ describe('PhotoComponent', () => {
     const serviceSpy = spyOn(photoService, 'getResizedPhoto').and.returnValue(of(blob));
     const UrlSpy = spyOn(URL, 'createObjectURL').and.returnValue(url);
     const UrlRevokeSpy = spyOn(URL, 'revokeObjectURL');
-    const spinnerSpy = spyOn(component, 'showSpinner');
-    const readySpy = spyOn(component, 'imageIsReady');
 
     component.type = 'detail';
     component.photo = photo;
 
     fixture.detectChanges();
 
-    expect(spinnerSpy).toHaveBeenCalled();
-    expect(readySpy).toHaveBeenCalled();
     expect(component.loading).toEqual(false);
     expect(serviceSpy).toHaveBeenCalled();
     expect(UrlSpy).toHaveBeenCalledWith(blob);
