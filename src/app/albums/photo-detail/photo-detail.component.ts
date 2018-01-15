@@ -21,8 +21,7 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
   loadingError: boolean;
   private index: number;
 
-  constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService,
-              private router: Router) {
+  constructor(private route: ActivatedRoute, private location: Location, private albumService: AlbumService) {
   }
 
   ngOnInit(): void {
@@ -65,11 +64,7 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    if (this.album) {
-      this.router.navigateByUrl('/album/' + this.album.id);
-    } else {
-      this.location.back();
-    }
+    this.location.back();
   }
 
   @HostListener('document:keydown', ['$event'])

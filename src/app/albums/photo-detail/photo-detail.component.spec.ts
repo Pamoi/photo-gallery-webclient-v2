@@ -143,31 +143,12 @@ describe('PhotoDetailComponent', () => {
     expect(spy).toHaveBeenCalled();
   }));
 
-  it('should call router.navigateByUrl() on close button click if album is set', fakeAsync(() => {
+  it('should call Location.back() on close button click', fakeAsync(() => {
     const album = new Album();
-    album.id = 123;
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
     fixture.detectChanges();
 
-    const locationSpy = spyOn(location, 'back');
-    const spy = spyOn(router, 'navigateByUrl');
-
-    const bar = fixture.debugElement.query(By.css('.button-bar'));
-    const closeBtn = bar.children[1];
-    closeBtn.triggerEventHandler('click', null);
-
-    fixture.detectChanges();
-
-    expect(spy).toHaveBeenCalledWith('/album/123');
-    expect(locationSpy).not.toHaveBeenCalled();
-  }));
-
-  it('should call Location.back() on close button click if album is not set', fakeAsync(() => {
-    spyOn(albumService, 'getAlbum').and.returnValue(Observable.throw(new Error('')));
-    fixture.detectChanges();
-
-    const routerSpy = spyOn(router, 'navigateByUrl');
     const spy = spyOn(location, 'back');
 
     const bar = fixture.debugElement.query(By.css('.button-bar'));
@@ -177,7 +158,6 @@ describe('PhotoDetailComponent', () => {
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
-    expect(routerSpy).not.toHaveBeenCalled();
   }));
 
   it('should show error message if loading fails', fakeAsync(() => {
