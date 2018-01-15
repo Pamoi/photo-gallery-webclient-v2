@@ -14,6 +14,8 @@ import { Photo } from '../shared/photo.model';
 import { By } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
+import { CoreModule } from '../../core/core.module';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 const locationStub = {
   back(): void {
@@ -38,14 +40,15 @@ describe('PhotoDetailComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
-      declarations: [PhotoDetailComponent, PhotoComponent],
+      declarations: [PhotoDetailComponent],
       providers: [AlbumService, PhotoService, HttpClient, HttpHandler, AppConfigService, {
         provide: ActivatedRoute, useValue: {
           snapshot: { params: { albumId: 13, photoId: 666 } }
         }
       },
         { provide: Location, useValue: locationStub },
-        { provide: Router, useValue: routerStub }]
+        { provide: Router, useValue: routerStub }],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

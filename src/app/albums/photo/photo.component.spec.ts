@@ -6,6 +6,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Photo } from '../shared/photo.model';
 import { of } from 'rxjs/observable/of';
+import { CoreModule } from '../../core/core.module';
 
 describe('PhotoComponent', () => {
   let component: PhotoComponent;
@@ -14,6 +15,7 @@ describe('PhotoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [CoreModule],
       declarations: [PhotoComponent],
       providers: [PhotoService, HttpClient, HttpHandler, AppConfigService]
     })
@@ -63,12 +65,17 @@ describe('PhotoComponent', () => {
     const serviceSpy = spyOn(photoService, 'getResizedPhoto').and.returnValue(of(blob));
     const UrlSpy = spyOn(URL, 'createObjectURL').and.returnValue(url);
     const UrlRevokeSpy = spyOn(URL, 'revokeObjectURL');
+    const spinnerSpy = spyOn(component, 'showSpinner');
+    const readySpy = spyOn(component, 'imageIsReady');
 
     component.type = 'detail';
     component.photo = photo;
 
     fixture.detectChanges();
 
+    expect(spinnerSpy).toHaveBeenCalled();
+    expect(readySpy).toHaveBeenCalled();
+    expect(component.loading).toEqual(false);
     expect(serviceSpy).toHaveBeenCalled();
     expect(UrlSpy).toHaveBeenCalledWith(blob);
     expect(component.image.nativeElement.src).toMatch(url);

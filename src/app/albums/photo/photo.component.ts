@@ -8,11 +8,15 @@ import { PhotoService } from '../shared/photo.service';
   styleUrls: ['./photo.component.scss']
 })
 export class PhotoComponent implements OnDestroy {
+  private static SHOW_SPINNER_DELAY = 400;
+
   @Input() type: string;
   @ViewChild('image') image: ElementRef;
+  loading = false;
 
   private _photo: Photo;
   private objectURL: string;
+  private isImageReady = false;
 
   constructor(private photoService: PhotoService) { }
 
@@ -28,6 +32,22 @@ export class PhotoComponent implements OnDestroy {
     this.revokeObjectURL();
   }
 
+  private showSpinner(): void {
+    this.isImageReady = false;
+
+    setTimeout(() => {
+      if (!this.isImageReady) {
+        this.image.nativeElement.src = '';
+        this.loading = true;
+      }
+    }, PhotoComponent.SHOW_SPINNER_DELAY);
+  }
+
+  private imageIsReady(): void {
+    this.isImageReady = true;
+    this.loading = false;
+  }
+
   private getImage(): void {
     if (!this._photo) {
       return;
@@ -35,6 +55,7 @@ export class PhotoComponent implements OnDestroy {
 
     switch (this.type) {
       case 'detail':
+        this.showSpinner();
         this.photoService.getResizedPhoto(this._photo).subscribe(blob => this.displayImage(blob));
         break;
 
@@ -55,6 +76,7 @@ export class PhotoComponent implements OnDestroy {
     this.revokeObjectURL();
     this.objectURL = URL.createObjectURL(blob);
     this.image.nativeElement.src = this.objectURL;
+    this.imageIsReady();
   }
 
   private revokeObjectURL(): void {
