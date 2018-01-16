@@ -10,7 +10,6 @@ import { PhotoService } from '../shared/photo.service';
 export class PhotoComponent implements OnDestroy {
   private static SHOW_SPINNER_DELAY = 400;
 
-  @Input() type: string;
   @ViewChild('image') image: ElementRef;
   loading = false;
 
@@ -43,32 +42,10 @@ export class PhotoComponent implements OnDestroy {
     }, PhotoComponent.SHOW_SPINNER_DELAY);
   }
 
-  private imageIsReady(): void {
-    this.isImageReady = true;
-    this.loading = false;
-  }
-
   private getImage(): void {
-    if (!this._photo) {
-      return;
-    }
-
-    switch (this.type) {
-      case 'detail':
-        this.showSpinner();
-        this.photoService.getResizedPhoto(this._photo).subscribe(blob => this.displayImage(blob));
-        break;
-
-      case 'cover':
-        this.photoService.getCoverPhoto(this._photo).subscribe(blob => this.displayImage(blob));
-        break;
-
-      case 'thumbnail':
-        this.photoService.getThumbnailPhoto(this._photo).subscribe(blob => this.displayImage(blob));
-        break;
-
-      default:
-        throw new Error('Invalid photo component type.');
+    if (this._photo) {
+      this.showSpinner();
+      this.photoService.getResizedPhoto(this._photo).subscribe(blob => this.displayImage(blob));
     }
   }
 
@@ -76,7 +53,8 @@ export class PhotoComponent implements OnDestroy {
     this.revokeObjectURL();
     this.objectURL = URL.createObjectURL(blob);
     this.image.nativeElement.src = this.objectURL;
-    this.imageIsReady();
+    this.isImageReady = true;
+    this.loading = false;
   }
 
   private revokeObjectURL(): void {

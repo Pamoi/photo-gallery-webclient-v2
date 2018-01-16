@@ -26,6 +26,8 @@ import { DragDropDirective } from './shared/drag-drop.directive';
 import { SearchFormComponent } from './search-form/search-form.component';
 import { AlbumSearchListComponent } from './album-search-list/album-search-list.component';
 import { PhotoFilePreviewComponent } from './photo-file-preview/photo-file-preview.component';
+import { PhotoCoverComponent } from './photo-cover/photo-cover.component';
+import { PhotoThumbnailComponent } from './photo-thumbnail/photo-thumbnail.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { PhotoFilePreviewComponent } from './photo-file-preview/photo-file-previ
     DragDropDirective,
     SearchFormComponent,
     AlbumSearchListComponent,
-    PhotoFilePreviewComponent
+    PhotoFilePreviewComponent,
+    PhotoCoverComponent,
+    PhotoThumbnailComponent,
   ],
   imports: [
     AlbumsRoutingModule,

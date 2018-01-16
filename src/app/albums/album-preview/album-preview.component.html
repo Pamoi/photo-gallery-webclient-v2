@@ -7,7 +7,7 @@
 </div>
 <a routerLink="/album/{{album.id}}">
   <div *ngIf="album?.photos?.length == 0" class="no-photo-message">Cet album ne contient aucune photo.</div>
-  <app-photo *ngIf="coverPhoto" [photo]="coverPhoto" [type]="'cover'"></app-photo>
+  <app-photo-cover *ngIf="coverPhoto" [photo]="coverPhoto"></app-photo-cover>
 </a>
 <div class="row preview-comments">
   <div class="col-md preview-comment" *ngFor="let comment of album.comments | slice:-4">

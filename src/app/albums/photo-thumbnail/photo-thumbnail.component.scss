@@ -1,0 +1,21 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+$thumbnail-side: 200px;
+
+.thumbnail {
+  width: $thumbnail-side;
+  height: $thumbnail-side;
+}
+
+.placeholder {
+  width: $thumbnail-side;
+  height: $thumbnail-side;
+  margin: 1px;
+  float: left;
+  background-color: gray("200");
+}
+
+.placeholder:hover {
+  border: 1px solid gray("800");
+}

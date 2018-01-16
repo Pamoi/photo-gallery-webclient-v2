@@ -4,7 +4,6 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { AlbumService } from '../shared/album.service';
 import { AuthorListPipe } from '../shared/author-list.pipe';
-import { PhotoComponent } from '../photo/photo.component';
 import { Album } from '../shared/album.model';
 import { of } from 'rxjs/observable/of';
 import { CoreModule } from '../../core/core.module';
@@ -16,6 +15,7 @@ import { Observable } from 'rxjs/Observable';
 import { By } from '@angular/platform-browser';
 import { AlbumSearchListComponent } from './album-search-list.component';
 import { ActivatedRoute } from '@angular/router';
+import { PhotoCoverComponent } from '../photo-cover/photo-cover.component';
 
 describe('AlbumListComponent', () => {
   let component: AlbumSearchListComponent;
@@ -25,7 +25,7 @@ describe('AlbumListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, CoreModule],
-      declarations: [AlbumSearchListComponent, AlbumPreviewComponent, AuthorListPipe, PhotoComponent],
+      declarations: [AlbumSearchListComponent, AlbumPreviewComponent, AuthorListPipe, PhotoCoverComponent],
       providers: [AlbumService, PhotoService, HttpClient, HttpHandler, AppConfigService,
         {
           provide: ActivatedRoute,

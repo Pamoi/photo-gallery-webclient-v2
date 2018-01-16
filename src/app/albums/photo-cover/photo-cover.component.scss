@@ -1,0 +1,11 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+.cover {
+  width: 100%;
+}
+
+.placeholder {
+  width: 100%;
+  background-color: gray("200");
+}

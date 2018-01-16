@@ -31,7 +31,7 @@
     <div *ngIf="album?.photos?.length == 0" id="noPhotoMsg">Cet album ne contient aucune photo.</div>
     <div *ngFor="let photo of album?.photos" style="float:left;">
       <a routerLink="/album/{{album.id}}/photo/{{photo.id}}">
-        <app-photo [photo]="photo" [type]="'thumbnail'"></app-photo>
+        <app-photo-thumbnail [photo]="photo"></app-photo-thumbnail>
       </a>
     </div>
   </div>
