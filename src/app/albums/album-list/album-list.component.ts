@@ -1,22 +1,26 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 
 import { Album } from '../shared/album.model';
 import { AlbumError, AlbumService } from '../shared/album.service';
+import { AppStateService } from '../../core/shared/app-state.service';
 
 @Component({
   selector: 'app-album-list',
   templateUrl: './album-list.component.html'
 })
 
-export class AlbumListComponent implements OnInit {
+export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
+  private static STATE_KEY = 'AlbumListComponent';
+
   albums: Album[] = [];
   loading: boolean;
   loadingError: boolean;
   page = 1;
   pendingRequest = false;
   endReached = false;
+  scrollOffset = 0;
 
-  constructor(private albumService: AlbumService) { }
+  constructor(private albumService: AlbumService, private stateService: AppStateService) { }
 
   getAlbums(page: number): void {
     if (this.pendingRequest) {
@@ -45,11 +49,38 @@ export class AlbumListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAlbums(this.page);
+    const state = this.stateService.getState(AlbumListComponent.STATE_KEY);
+
+    if (state) {
+      this.albums = state.albums;
+      this.page = state.page;
+    } else {
+      this.getAlbums(this.page);
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const state = this.stateService.getState(AlbumListComponent.STATE_KEY);
+
+    if (state) {
+      window.scrollTo(0, state.scrollOffset);
+    }
+  }
+
+  ngOnDestroy(): void {
+    const state = {
+      albums: this.albums,
+      page: this.page,
+      scrollOffset: this.scrollOffset
+    };
+
+    this.stateService.setState(AlbumListComponent.STATE_KEY, state);
   }
 
   @HostListener('window:scroll')
   onScroll(): void {
+    this.scrollOffset = window.scrollY;
+
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
       if (!this.endReached) {
         this.getAlbums(this.page);
