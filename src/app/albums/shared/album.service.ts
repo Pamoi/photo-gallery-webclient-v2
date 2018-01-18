@@ -14,18 +14,25 @@ export class AlbumService {
   constructor(private http: HttpClient, private appConfig: AppConfigService) {
   }
 
-  getAlbums(page: number): Observable<Album[]> {
-    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list/' + page)
+  getAlbumsBefore(date: string): Observable<Album[]> {
+    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list?before=' + date)
       .pipe(
         catchError(
           (error: any): Observable<Album[]> => {
             if (error.status === 404) {
               throw new AlbumError(true);
             } else {
-              throw new Error('An error occurred while fetching album list.');
+              throw new Error('An error occurred while fetching albums.');
             }
           }
         )
+      );
+  }
+
+  getAlbumsAfter(date: string): Observable<Album[]> {
+    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/list?after=' + date)
+      .pipe(
+        catchError(this.throwError<Album[]>('An error occurred while fetching albums.'))
       );
   }
 

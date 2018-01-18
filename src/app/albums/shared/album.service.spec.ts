@@ -30,7 +30,7 @@ describe('AlbumService', () => {
     httpMock.verify();
   }));
 
-  describe('getAlbums()', () => {
+  describe('getAlbumsBefore()', () => {
     it('should send request to backend and return list',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
@@ -39,9 +39,10 @@ describe('AlbumService', () => {
 
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.getAlbums(3).subscribe(albums => expect(albums).toEqual(testAlbumList));
+            service.getAlbumsBefore('2018-01-17T21:12:45.000Z')
+              .subscribe(albums => expect(albums).toEqual(testAlbumList));
 
-            const req = httpMock.expectOne('https://mybackend.com/album/list/3');
+            const req = httpMock.expectOne('https://mybackend.com/album/list?before=2018-01-17T21:12:45.000Z');
             expect(req.request.method).toEqual('GET');
             req.flush(testAlbumList);
           })));
@@ -52,11 +53,11 @@ describe('AlbumService', () => {
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.getAlbums(1).subscribe(
+            service.getAlbumsBefore('2018-01-17T21:12:45.000Z').subscribe(
               albums => fail(),
-              (e) => expect(e.message).toEqual('An error occurred while fetching album list.'));
+              (e) => expect(e.message).toEqual('An error occurred while fetching albums.'));
 
-            const req = httpMock.expectOne('https://mybackend.com/album/list/1');
+            const req = httpMock.expectOne('https://mybackend.com/album/list?before=2018-01-17T21:12:45.000Z');
             expect(req.request.method).toEqual('GET');
             req.error(new ErrorEvent('Test Error'));
           })));
@@ -67,13 +68,46 @@ describe('AlbumService', () => {
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.getAlbums(3).subscribe(
+            service.getAlbumsBefore('2018-01-17T21:12:45.000Z').subscribe(
               albums => fail(),
               (e) => expect(e.endReached).toEqual(true));
 
-            const req = httpMock.expectOne('https://mybackend.com/album/list/3');
+            const req = httpMock.expectOne('https://mybackend.com/album/list?before=2018-01-17T21:12:45.000Z');
             expect(req.request.method).toEqual('GET');
             req.error(new ErrorEvent('Test Error'), { status: 404 });
+          })));
+  });
+
+  describe('getAlbumsBefore()', () => {
+    it('should send request to backend and return list',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            const testAlbumList: Album[] = [testAlbum];
+
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getAlbumsAfter('2018-01-17T21:12:45.000Z')
+              .subscribe(albums => expect(albums).toEqual(testAlbumList));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/list?after=2018-01-17T21:12:45.000Z');
+            expect(req.request.method).toEqual('GET');
+            req.flush(testAlbumList);
+          })));
+
+    it('should throw on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getAlbumsAfter('2018-01-17T21:12:45.000Z').subscribe(
+              albums => fail(),
+              (e) => expect(e.message).toEqual('An error occurred while fetching albums.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/list?after=2018-01-17T21:12:45.000Z');
+            expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'));
           })));
   });
 

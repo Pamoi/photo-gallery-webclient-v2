@@ -10,9 +10,6 @@ import { AppStateService } from '../../core/shared/app-state.service';
 })
 
 export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
-  private static STATE_KEY = 'AlbumListComponent';
-
-  albums: Album[] = [];
   loading: boolean;
   loadingError: boolean;
   page = 1;
@@ -20,9 +17,13 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
   endReached = false;
   scrollOffset = 0;
 
+  get albums() {
+    return this.stateService.albumList;
+  }
+
   constructor(private albumService: AlbumService, private stateService: AppStateService) { }
 
-  getAlbums(page: number): void {
+  loadMoreAlbums(): void {
     if (this.pendingRequest) {
       return;
     }
@@ -31,7 +32,7 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingError = false;
     this.pendingRequest = true;
 
-    this.albumService.getAlbums(page).subscribe(albums => {
+    this.albumService.getAlbumsBefore(this.getOldestDate()).subscribe(albums => {
       albums.forEach(a => this.albums.push(a));
       this.page += 1;
       this.loading = false;
@@ -48,43 +49,56 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    const state = this.stateService.getState(AlbumListComponent.STATE_KEY);
+  loadNewAlbums(): void {
+    this.albumService.getAlbumsAfter(this.getNewestDate()).subscribe(albums => {
+      albums.forEach(a => this.albums.unshift(a));
+    });
+  }
 
-    if (state) {
-      this.albums = state.albums;
-      this.page = state.page;
+  ngOnInit(): void {
+    if (this.albums.length === 0) {
+      this.loadMoreAlbums();
     } else {
-      this.getAlbums(this.page);
+      this.loadNewAlbums();
     }
   }
 
   ngAfterViewInit(): void {
-    const state = this.stateService.getState(AlbumListComponent.STATE_KEY);
-
-    if (state) {
-      window.scrollTo(0, state.scrollOffset);
-    }
+    window.scrollTo(0, this.stateService.listScrollOffset);
   }
 
   ngOnDestroy(): void {
-    const state = {
-      albums: this.albums,
-      page: this.page,
-      scrollOffset: this.scrollOffset
-    };
-
-    this.stateService.setState(AlbumListComponent.STATE_KEY, state);
   }
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.scrollOffset = window.scrollY;
+    this.stateService.listScrollOffset = window.scrollY;
 
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
       if (!this.endReached) {
-        this.getAlbums(this.page);
+        this.loadMoreAlbums();
       }
     }
+  }
+
+  private removeTimezone(date: Date): string {
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return date.toISOString();
+  }
+
+  private getNewestDate(): string {
+    if (this.albums.length === 0) {
+      return this.removeTimezone(new Date());
+    }
+
+    return this.removeTimezone(new Date(this.albums[0].creationDate));
+  }
+
+  private getOldestDate(): string {
+    if (this.albums.length === 0) {
+      return this.removeTimezone(new Date());
+    }
+
+    return this.removeTimezone(new Date(this.albums[this.albums.length - 1].creationDate));
   }
 }

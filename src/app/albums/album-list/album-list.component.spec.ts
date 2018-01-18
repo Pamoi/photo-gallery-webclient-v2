@@ -49,12 +49,12 @@ describe('AlbumListComponent', () => {
     album.id = 13;
     album.title = 'THE album';
     const albums = [album];
-    const spy = spyOn(albumService, 'getAlbums').and.returnValue(of(albums));
+    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(of(albums));
 
     fixture.detectChanges();
     tick();
 
-    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy).toHaveBeenCalled();
     expect(component.albums).toEqual(albums);
   }));
 
@@ -64,7 +64,7 @@ describe('AlbumListComponent', () => {
     album.title = 'THE album';
     const albums = [album];
 
-    const spy = spyOn(albumService, 'getAlbums').and.returnValue(Observable.throw(new Error('Error')));
+    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(Observable.throw(new Error('Error')));
 
     fixture.detectChanges();
     tick();
@@ -88,16 +88,18 @@ describe('AlbumListComponent', () => {
   }));
 
   it('should fetch next page on scroll', fakeAsync(() => {
+    const date = new Date();
     const album = new Album();
     album.id = 13;
     album.title = 'THE album';
+    album.creationDate = date.toISOString();
     const albums = [album];
-    const spy = spyOn(albumService, 'getAlbums').and.returnValue(of(albums));
+    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(of(albums));
 
     fixture.detectChanges();
     tick();
 
-    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy).toHaveBeenCalled();
     expect(component.albums).toEqual(albums);
 
     component.onScroll();
@@ -105,55 +107,32 @@ describe('AlbumListComponent', () => {
     fixture.detectChanges();
     tick();
 
-    expect(spy).toHaveBeenCalledWith(2);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    const dezonedDate = date.toISOString();
+
+    expect(spy).toHaveBeenCalledWith(dezonedDate);
     expect(spy).toHaveBeenCalledTimes(2);
     expect(component.albums).toEqual([album, album]);
   }));
 
-  it('should store state on destroy', fakeAsync(() => {
-    const album = new Album();
-    album.id = 13;
-    album.title = 'THE album';
-    const albums = [album];
-    const spy = spyOn(albumService, 'getAlbums').and.returnValue(of(albums));
-    const stateSpy = spyOn(stateService, 'setState');
-
-    fixture.detectChanges();
-    tick();
-
-    expect(spy).toHaveBeenCalledWith(1);
-    expect(component.albums).toEqual(albums);
-
-    component.page = 3;
-    component.scrollOffset = 48;
-
-    component.ngOnDestroy();
-    expect(stateSpy).toHaveBeenCalledWith('AlbumListComponent', {
-      albums: albums,
-      page: 3,
-      scrollOffset: 48
-    });
-  }));
-
-  it('should restore state on creation if state was saved', fakeAsync(() => {
+  it('should fetch new albums and restore scroll state on creation if state was saved', fakeAsync(() => {
     const album = new Album();
     album.id = 666;
     album.title = 'Saved album';
+    album.creationDate = new Date().toISOString();
     const albums = [album];
-    const spy = spyOn(albumService, 'getAlbums').and.returnValue(of(albums));
-    const stateSpy = spyOn(stateService, 'getState').and.returnValue({
-      albums: [album],
-      page: 3,
-      scrollOffset: 48
-    });
+
+    stateService.albumList = albums;
+    stateService.listScrollOffset = 48;
+
+    const spy = spyOn(albumService, 'getAlbumsAfter').and.returnValue(of(albums));
+
     const scrollSpy = spyOn(window, 'scrollTo');
 
     fixture.detectChanges();
 
-    expect(stateSpy).toHaveBeenCalledWith('AlbumListComponent');
-    expect(spy).not.toHaveBeenCalled();
-    expect(component.albums).toEqual(albums);
-    expect(component.page).toEqual(3);
+    expect(spy).toHaveBeenCalled();
+    expect(component.albums).toEqual([album, album]);
     expect(scrollSpy).toHaveBeenCalledWith(0, 48);
   }));
 });
