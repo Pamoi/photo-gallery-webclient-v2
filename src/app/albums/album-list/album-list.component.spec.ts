@@ -15,19 +15,17 @@ import { PhotoService } from '../shared/photo.service';
 import { Observable } from 'rxjs/Observable';
 import { By } from '@angular/platform-browser';
 import { PhotoCoverComponent } from '../photo-cover/photo-cover.component';
-import { AppStateService } from '../../core/shared/app-state.service';
 
 describe('AlbumListComponent', () => {
   let component: AlbumListComponent;
   let albumService: AlbumService;
-  let stateService: AppStateService;
   let fixture: ComponentFixture<AlbumListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, CoreModule],
       declarations: [AlbumListComponent, AlbumPreviewComponent, AuthorListPipe, PhotoCoverComponent],
-      providers: [AlbumService, PhotoService, HttpClient, HttpHandler, AppConfigService, AppStateService]
+      providers: [AlbumService, PhotoService, HttpClient, HttpHandler, AppConfigService]
     })
       .compileComponents();
   }));
@@ -36,7 +34,6 @@ describe('AlbumListComponent', () => {
     fixture = TestBed.createComponent(AlbumListComponent);
     component = fixture.componentInstance;
     albumService = fixture.debugElement.injector.get(AlbumService);
-    stateService = fixture.debugElement.injector.get(AppStateService);
   });
 
   it('should create', () => {
@@ -49,7 +46,10 @@ describe('AlbumListComponent', () => {
     album.id = 13;
     album.title = 'THE album';
     const albums = [album];
-    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(of(albums));
+    const spy = spyOn(albumService, 'getMoreAlbums').and.callFake(() => {
+      albumService.localAlbumList = albums;
+      return of(null);
+    });
 
     fixture.detectChanges();
     tick();
@@ -64,7 +64,7 @@ describe('AlbumListComponent', () => {
     album.title = 'THE album';
     const albums = [album];
 
-    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(Observable.throw(new Error('Error')));
+    const spy = spyOn(albumService, 'getMoreAlbums').and.returnValue(Observable.throw(new Error('Error')));
 
     fixture.detectChanges();
     tick();
@@ -75,7 +75,10 @@ describe('AlbumListComponent', () => {
     const msg = fixture.debugElement.query(By.css('.alert-warning'));
     expect(msg.nativeElement.innerText).toEqual('Erreur lors du chargement des albums. Réessayer.');
 
-    spy.and.returnValue(of(albums));
+    spy.and.callFake(() => {
+      albumService.localAlbumList.push(album);
+      return of(null);
+    });
     const link = msg.children[0];
     link.nativeElement.click();
 
@@ -94,7 +97,10 @@ describe('AlbumListComponent', () => {
     album.title = 'THE album';
     album.creationDate = date.toISOString();
     const albums = [album];
-    const spy = spyOn(albumService, 'getAlbumsBefore').and.returnValue(of(albums));
+    const spy = spyOn(albumService, 'getMoreAlbums').and.callFake(() => {
+      albumService.localAlbumList.push(album);
+      return of(null);
+    });
 
     fixture.detectChanges();
     tick();
@@ -107,10 +113,6 @@ describe('AlbumListComponent', () => {
     fixture.detectChanges();
     tick();
 
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    const dezonedDate = date.toISOString();
-
-    expect(spy).toHaveBeenCalledWith(dezonedDate);
     expect(spy).toHaveBeenCalledTimes(2);
     expect(component.albums).toEqual([album, album]);
   }));
@@ -120,12 +122,14 @@ describe('AlbumListComponent', () => {
     album.id = 666;
     album.title = 'Saved album';
     album.creationDate = new Date().toISOString();
-    const albums = [album];
 
-    stateService.albumList = albums;
-    stateService.listScrollOffset = 48;
+    albumService.localAlbumList = [album];
+    albumService.listScrollOffset = 48;
 
-    const spy = spyOn(albumService, 'getAlbumsAfter').and.returnValue(of(albums));
+    const spy = spyOn(albumService, 'getNewAlbums').and.callFake(() => {
+      albumService.localAlbumList.push(album);
+      return of(null);
+    });
 
     const scrollSpy = spyOn(window, 'scrollTo');
 

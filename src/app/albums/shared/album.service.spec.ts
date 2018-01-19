@@ -5,6 +5,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { AlbumService } from './album.service';
 import { Album } from './album.model';
 import { of } from 'rxjs/observable/of';
+import { Comment } from './comment.model';
 
 describe('AlbumService', () => {
 
@@ -29,6 +30,85 @@ describe('AlbumService', () => {
   afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
     httpMock.verify();
   }));
+
+  describe('getMoreAlbums()', () => {
+    it('should call getAlbumsBefore',
+      async(
+        inject([AlbumService], (service: AlbumService) => {
+          const testAlbumList: Album[] = [testAlbum];
+
+          const spy = spyOn(service, 'getAlbumsBefore').and.returnValue(of(testAlbumList));
+
+          service.getMoreAlbums().subscribe();
+
+          expect(spy).toHaveBeenCalled();
+          expect(service.localAlbumList).toEqual(testAlbumList);
+        })));
+
+    it('should call getAlbumsBefore with last album creation date',
+      async(
+        inject([AlbumService], (service: AlbumService) => {
+          const testAlbumList: Album[] = [testAlbum];
+          const a1 = new Album();
+          a1.id = 2;
+          a1.creationDate = '2018-01-17T21:12:45+0100';
+          a1.photos = [];
+          const a2 = new Album();
+          a2.id = 2;
+          a2.creationDate = '2018-01-17T20:00:00+0100';
+          a2.photos = [];
+
+          service.localAlbumList.push(a1);
+          service.localAlbumList.push(a2);
+
+          const spy = spyOn(service, 'getAlbumsBefore').and.returnValue(of(testAlbumList));
+
+          service.getMoreAlbums().subscribe();
+
+          expect(spy).toHaveBeenCalledWith('2018-01-17T20:00:00.000Z');
+          expect(service.localAlbumList).toEqual([a1, a2, testAlbum]);
+        })));
+  });
+
+  describe('getNewAlbums()', () => {
+    it('should call getAlbumsAfter',
+      async(
+        inject([AlbumService], (service: AlbumService) => {
+          const testAlbumList: Album[] = [testAlbum];
+
+          const spy = spyOn(service, 'getAlbumsAfter').and.returnValue(of(testAlbumList));
+
+          service.getNewAlbums().subscribe();
+
+          expect(spy).toHaveBeenCalled();
+          expect(service.localAlbumList).toEqual(testAlbumList);
+        })));
+
+    it('should call getAlbumsAfter with first album creation date',
+      async(
+        inject([AlbumService], (service: AlbumService) => {
+          const testAlbumList: Album[] = [testAlbum];
+          const a = new Album();
+          const a1 = new Album();
+          a1.id = 2;
+          a1.creationDate = '2018-01-17T21:12:45+0100';
+          a1.photos = [];
+          const a2 = new Album();
+          a2.id = 2;
+          a2.creationDate = '2018-01-17T20:00:00+0100';
+          a2.photos = [];
+
+          service.localAlbumList.push(a1);
+          service.localAlbumList.push(a2);
+
+          const spy = spyOn(service, 'getAlbumsAfter').and.returnValue(of(testAlbumList));
+
+          service.getNewAlbums().subscribe();
+
+          expect(spy).toHaveBeenCalledWith('2018-01-17T21:12:45.000Z');
+          expect(service.localAlbumList).toEqual([testAlbum, a1, a2]);
+        })));
+  });
 
   describe('getAlbumsBefore()', () => {
     it('should send request to backend and return list',
@@ -112,13 +192,20 @@ describe('AlbumService', () => {
   });
 
   describe('getAlbum()', () => {
-    it('should send request to backend and return album',
+    it('should send request to backend, return album and update local album list',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            const a = new Album();
+            a.id = 1;
+            service.localAlbumList.push(a);
+
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.getAlbum(1).subscribe(album => expect(album).toEqual(testAlbum));
+            service.getAlbum(1).subscribe(album => {
+              expect(album).toEqual(testAlbum);
+              expect(service.localAlbumList).toEqual([album]);
+            });
 
             const req = httpMock.expectOne('https://mybackend.com/album/1');
             expect(req.request.method).toEqual('GET');
@@ -181,7 +268,7 @@ describe('AlbumService', () => {
   });
 
   describe('putAlbum()', () => {
-    it('should send request to backend and return album',
+    it('should send request to backend, return album and update local album list',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
@@ -195,9 +282,16 @@ describe('AlbumService', () => {
               authorsIds: '1,12'
             };
 
+            const a = new Album();
+            a.id = 1;
+            service.localAlbumList.push(a);
+
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.putAlbum(testAlbum).subscribe(album => expect(album).toEqual(testAlbum));
+            service.putAlbum(testAlbum).subscribe(album => {
+              expect(album).toEqual(testAlbum);
+              expect(service.localAlbumList).toEqual([album]);
+            });
 
             const req = httpMock.expectOne('https://mybackend.com/album/1');
             expect(req.request.method).toEqual('POST');
@@ -221,13 +315,19 @@ describe('AlbumService', () => {
   });
 
   describe('deleteAlbum()', () => {
-    it('should send request to backend and return void',
+    it('should send request to backend, return void and update local album list',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.deleteAlbum(666).subscribe();
+            const a = new Album();
+            a.id = 666;
+            service.localAlbumList.push(a);
+
+            service.deleteAlbum(666).subscribe(() => {
+              expect(service.localAlbumList).toEqual([]);
+            });
 
             const req = httpMock.expectOne('https://mybackend.com/album/666');
             expect(req.request.method).toEqual('DELETE');
@@ -316,10 +416,16 @@ describe('AlbumService', () => {
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             const text = 'My comment text';
+            const a = new Album();
+            a.id = 1;
+            service.localAlbumList.push(a);
 
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
 
-            service.commentAlbum(1, text).subscribe(album => expect(album).toEqual(testAlbum));
+            service.commentAlbum(1, text).subscribe(album => {
+              expect(album).toEqual(testAlbum);
+              expect(service.localAlbumList).toEqual([album]);
+            });
 
             const req = httpMock.expectOne('https://mybackend.com/album/1/comment');
             expect(req.request.method).toEqual('POST');
@@ -345,13 +451,22 @@ describe('AlbumService', () => {
   });
 
   describe('deleteComment()', () => {
-    it('should send request to backend and return void',
+    it('should send request to backend, return void and update local album list',
       async(
         inject([HttpTestingController, AppConfigService, AlbumService],
           (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
             spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+            const c = new Comment();
+            c.id = 11;
+            c.text = 'Hello';
+            const a = new Album();
+            a.id = 1;
+            a.comments = [c];
+            service.localAlbumList.push(a);
 
-            service.deleteComment(1, 11).subscribe();
+            service.deleteComment(1, 11).subscribe(() => {
+              expect(service.localAlbumList[0].comments).toEqual([]);
+            });
 
             const req = httpMock.expectOne('https://mybackend.com/album/1/comment/11');
             expect(req.request.method).toEqual('DELETE');

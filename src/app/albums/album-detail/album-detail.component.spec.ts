@@ -18,7 +18,6 @@ import { AuthService } from '../../authentication/shared/auth.service';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 import { Photo } from '../shared/photo.model';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { AppStateService } from '../../core/shared/app-state.service';
 
 describe('AlbumDetailComponent', () => {
   let component: AlbumDetailComponent;
@@ -26,15 +25,13 @@ describe('AlbumDetailComponent', () => {
   let auth: AuthService;
   let toast: ToastService;
   let router: Router;
-  let stateService: AppStateService;
   let fixture: ComponentFixture<AlbumDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, CoreModule, FormsModule],
       declarations: [AlbumDetailComponent, AuthorListPipe],
-      providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, AuthService, ToastService,
-        AppStateService, {
+      providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, AuthService, ToastService, {
         provide: ActivatedRoute, useValue: {
           snapshot: { params: { id: 13 } }
         }
@@ -50,7 +47,6 @@ describe('AlbumDetailComponent', () => {
     albumService = fixture.debugElement.injector.get(AlbumService);
     auth = fixture.debugElement.injector.get(AuthService);
     toast = fixture.debugElement.injector.get(ToastService);
-    stateService = fixture.debugElement.injector.get(AppStateService);
     router = fixture.debugElement.injector.get(Router);
   });
 
@@ -197,8 +193,6 @@ describe('AlbumDetailComponent', () => {
     album.title = 'THE album';
     album.authors = [{ id: 3, username: 'Toto' }];
 
-    stateService.albumList = [album];
-
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
     spyOn(auth, 'getUserId').and.returnValue(3);
     spyOn(auth, 'isLoggedIn').and.returnValue(true);
@@ -218,7 +212,6 @@ describe('AlbumDetailComponent', () => {
     btn2.nativeElement.click();
 
     expect(albumSpy).toHaveBeenCalledWith(13);
-    expect(stateService.albumList).toEqual([]);
     expect(toastSpy).toHaveBeenCalledWith('Album supprimé.', ToastType.Success, ToastDuration.Medium);
     expect(routerSpy).toHaveBeenCalledWith('/');
   }));
@@ -229,7 +222,6 @@ describe('AlbumDetailComponent', () => {
     album.title = 'THE album';
     album.authors = [{ id: 3, username: 'Toto' }];
 
-    stateService.albumList = [album];
 
     const albumSpy = spyOn(albumService, 'deleteAlbum').and.returnValue(Observable.throw(new Error('')));
     const toastSpy = spyOn(toast, 'toast');
@@ -239,7 +231,6 @@ describe('AlbumDetailComponent', () => {
     component.deleteAlbum();
 
     expect(albumSpy).toHaveBeenCalledWith(13);
-    expect(stateService.albumList).toEqual([album]);
     expect(toastSpy)
       .toHaveBeenCalledWith('Erreur lors de la suppression de l\'album', ToastType.Danger, ToastDuration.Medium);
     expect(routerSpy).not.toHaveBeenCalled();

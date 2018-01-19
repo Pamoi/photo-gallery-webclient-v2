@@ -6,7 +6,6 @@ import { Album } from '../shared/album.model';
 import { AlbumService } from '../shared/album.service';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 import { AuthService } from '../../authentication/shared/auth.service';
-import { AppStateService } from '../../core/shared/app-state.service';
 
 @Component({
   selector: 'app-album-detail',
@@ -29,7 +28,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('cancelBtn') cancelBtn: ElementRef;
 
   constructor(private route: ActivatedRoute, private router: Router, private albumService: AlbumService,
-              private toast: ToastService, private auth: AuthService, private stateService: AppStateService) {}
+              private toast: ToastService, private auth: AuthService) {}
 
   ngOnInit(): void {
     this.getAlbum();
@@ -75,12 +74,6 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
 
     this.albumService.deleteAlbum(this.album.id).subscribe(() => {
       this.suppressing = false;
-
-      const index = this.stateService.albumList.map(a => a.id).indexOf(this.album.id);
-      if (index >= 0) {
-        this.stateService.albumList.splice(index, 1);
-      }
-
       this.cancelBtn.nativeElement.click();
 
       this.toast.toast('Album supprimé.', ToastType.Success, ToastDuration.Medium);

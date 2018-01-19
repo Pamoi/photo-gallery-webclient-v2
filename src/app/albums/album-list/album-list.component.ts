@@ -1,27 +1,22 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-
-import { Album } from '../shared/album.model';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { AlbumError, AlbumService } from '../shared/album.service';
-import { AppStateService } from '../../core/shared/app-state.service';
 
 @Component({
   selector: 'app-album-list',
   templateUrl: './album-list.component.html'
 })
 
-export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
-  loading: boolean;
-  loadingError: boolean;
-  page = 1;
+export class AlbumListComponent implements OnInit, AfterViewInit {
+  loading = false;
+  loadingError = false;
   pendingRequest = false;
   endReached = false;
-  scrollOffset = 0;
 
   get albums() {
-    return this.stateService.albumList;
+    return this.albumService.localAlbumList;
   }
 
-  constructor(private albumService: AlbumService, private stateService: AppStateService) { }
+  constructor(private albumService: AlbumService) { }
 
   loadMoreAlbums(): void {
     if (this.pendingRequest) {
@@ -32,9 +27,7 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadingError = false;
     this.pendingRequest = true;
 
-    this.albumService.getAlbumsBefore(this.getOldestDate()).subscribe(albums => {
-      albums.forEach(a => this.albums.push(a));
-      this.page += 1;
+    this.albumService.getMoreAlbums().subscribe(() => {
       this.loading = false;
       this.pendingRequest = false;
     }, (error: AlbumError) => {
@@ -50,9 +43,7 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadNewAlbums(): void {
-    this.albumService.getAlbumsAfter(this.getNewestDate()).subscribe(albums => {
-      albums.forEach(a => this.albums.unshift(a));
-    });
+    this.albumService.getNewAlbums().subscribe();
   }
 
   ngOnInit(): void {
@@ -64,41 +55,17 @@ export class AlbumListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    window.scrollTo(0, this.stateService.listScrollOffset);
-  }
-
-  ngOnDestroy(): void {
+    window.scrollTo(0, this.albumService.listScrollOffset);
   }
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.stateService.listScrollOffset = window.scrollY;
+    this.albumService.listScrollOffset = window.scrollY;
 
     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
       if (!this.endReached) {
         this.loadMoreAlbums();
       }
     }
-  }
-
-  private removeTimezone(date: Date): string {
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    return date.toISOString();
-  }
-
-  private getNewestDate(): string {
-    if (this.albums.length === 0) {
-      return this.removeTimezone(new Date());
-    }
-
-    return this.removeTimezone(new Date(this.albums[0].creationDate));
-  }
-
-  private getOldestDate(): string {
-    if (this.albums.length === 0) {
-      return this.removeTimezone(new Date());
-    }
-
-    return this.removeTimezone(new Date(this.albums[this.albums.length - 1].creationDate));
   }
 }
