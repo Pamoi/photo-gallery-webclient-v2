@@ -19,7 +19,6 @@ import { AuthenticationModule } from './authentication/authentication.module';
     AuthenticationModule,
     AlbumsModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

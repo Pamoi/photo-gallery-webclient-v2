@@ -7,11 +7,13 @@ import { PhotoDetailComponent } from './photo-detail/photo-detail.component';
 import { AlbumFormComponent } from './album-form/album-form.component';
 import { AlbumSearchListComponent } from './album-search-list/album-search-list.component';
 import { AuthGuard } from '../authentication/shared/auth-guard.service';
+import { RandomAlbumResolver } from './shared/random-album-resolver.service';
 
 const routes: Routes = [
   { path: '', component: AlbumListComponent },
   { path: 'album/upload', component: AlbumFormComponent, canActivate: [AuthGuard] },
   { path: 'album/search/:term', component: AlbumSearchListComponent },
+  { path: 'album/random', component: AlbumDetailComponent, resolve: { album: RandomAlbumResolver } },
   { path: 'album/:id', component: AlbumDetailComponent },
   { path: 'album/:id/edit', component: AlbumFormComponent, canActivate: [AuthGuard] },
   { path: 'album/:albumId/photo/:photoId', component: PhotoDetailComponent }
@@ -19,7 +21,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [RandomAlbumResolver]
 })
 export class AlbumsRoutingModule {
 }

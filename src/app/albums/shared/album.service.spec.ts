@@ -227,6 +227,42 @@ describe('AlbumService', () => {
           })));
   });
 
+  describe('getRandomAlbum()', () => {
+    it('should send request to backend, return album and update local album list',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            const a = new Album();
+            a.id = 1;
+            service.localAlbumList.push(a);
+
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getRandomAlbum().subscribe(album => {
+              expect(album).toEqual(testAlbum);
+              expect(service.localAlbumList).toEqual([album]);
+            });
+
+            const req = httpMock.expectOne('https://mybackend.com/album/random');
+            expect(req.request.method).toEqual('GET');
+            req.flush(testAlbum);
+          })));
+
+    it('should fail on error',
+      async(
+        inject([HttpTestingController, AppConfigService, AlbumService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: AlbumService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.getRandomAlbum().subscribe(album => fail('observable should not resolve on failed request'),
+              error => expect(error.message).toEqual('An error occurred while fetching random album.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/album/random');
+            expect(req.request.method).toEqual('GET');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
   describe('postAlbum()', () => {
     it('should send request to backend and return album',
       async(

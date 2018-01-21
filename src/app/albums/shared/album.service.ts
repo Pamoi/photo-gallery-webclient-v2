@@ -63,6 +63,14 @@ export class AlbumService {
       );
   }
 
+  getRandomAlbum(): Observable<Album> {
+    return this.http.get<Album>(this.appConfig.getBackendUrl() + '/album/random')
+      .map(a => this.updateLocalAlbum(a))
+      .pipe(
+        catchError(this.throwError<Album>('An error occurred while fetching random album.'))
+      );
+  }
+
   postAlbum(album: Album): Observable<Album> {
     return this.http.post<Album>(this.appConfig.getBackendUrl() + '/album', this.getBody(album)).pipe(
       catchError(this.throwError<Album>('An error occurred while sending album.'))

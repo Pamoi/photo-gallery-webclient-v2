@@ -33,7 +33,7 @@ describe('AlbumDetailComponent', () => {
       declarations: [AlbumDetailComponent, AuthorListPipe],
       providers: [AlbumService, AuthService, HttpClient, HttpHandler, AppConfigService, AuthService, ToastService, {
         provide: ActivatedRoute, useValue: {
-          snapshot: { params: { id: 13 } }
+          params: of({ id: 13 })
         }
       }],
       schemas: [NO_ERRORS_SCHEMA]
@@ -55,14 +55,13 @@ describe('AlbumDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch and set album on init', fakeAsync(() => {
+  it('should fetch and set album on init', async(() => {
     const album = new Album();
     album.id = 13;
     album.title = 'THE album';
     const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
 
     fixture.detectChanges();
-    tick();
 
     expect(spy).toHaveBeenCalledWith(13);
     expect(component.album).toEqual(album);
@@ -236,7 +235,7 @@ describe('AlbumDetailComponent', () => {
     expect(routerSpy).not.toHaveBeenCalled();
   }));
 
-  it('should download album on button click', async(() => {
+  it('should download album on button click', fakeAsync(() => {
     const album = new Album();
     album.id = 13;
     album.title = 'THE album';
@@ -247,11 +246,13 @@ describe('AlbumDetailComponent', () => {
     const albumSpy = spyOn(albumService, 'getAlbumDownloadUrl').and.returnValue(of(url));
     const linkSpy = spyOn(component.downloadLink.nativeElement, 'click');
 
-    component.album = album;
+    tick();
     fixture.detectChanges();
 
+    component.album = album;
+
     const btn = fixture.debugElement.query(By.css('.btn-primary'));
-    expect(btn.nativeElement.innerText).toEqual('Télécharger');
+    expect(btn.nativeElement.innerText.trim()).toEqual('Télécharger');
     btn.nativeElement.click();
 
     expect(albumSpy).toHaveBeenCalledWith(13);
@@ -259,7 +260,7 @@ describe('AlbumDetailComponent', () => {
     expect(linkSpy).toHaveBeenCalled();
   }));
 
-  it('should show toast on download error', async(() => {
+  it('should show toast on download error', fakeAsync(() => {
     const album = new Album();
     album.id = 13;
     album.title = 'THE album';
@@ -270,6 +271,9 @@ describe('AlbumDetailComponent', () => {
       .and.returnValue(Observable.throw(new Error('')));
     const linkSpy = spyOn(component.downloadLink.nativeElement, 'click');
     const toastSpy = spyOn(toast, 'toast');
+
+    fixture.detectChanges();
+    tick();
 
     component.album = album;
     fixture.detectChanges();

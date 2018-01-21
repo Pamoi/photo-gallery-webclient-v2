@@ -14,6 +14,7 @@ import { AuthService } from '../../authentication/shared/auth.service';
 })
 
 export class AlbumDetailComponent implements OnInit, AfterViewInit {
+  albumId: number;
   album: Album;
   loading = false;
   loadingError = false;
@@ -31,7 +32,10 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
               private toast: ToastService, private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.getAlbum();
+    this.route.params.subscribe(params => {
+      this.albumId = +params['id'];
+      this.getAlbum();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -56,11 +60,15 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   }
 
   getAlbum(): void {
+    if (!this.albumId) {
+      return;
+    }
+
+    this.album = null;
     this.loading = true;
     this.loadingError = false;
 
-    const id = +this.route.snapshot.params['id'];
-    this.albumService.getAlbum(id).subscribe(album => {
+    this.albumService.getAlbum(this.albumId).subscribe(album => {
       this.album = album;
       this.loading = false;
     }, () => {

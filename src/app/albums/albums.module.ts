@@ -59,7 +59,7 @@ import { PhotoThumbnailComponent } from './photo-thumbnail/photo-thumbnail.compo
   exports: [
     SearchFormComponent
   ],
-  providers: [AlbumService, PhotoService, UserService],
+  providers: [AlbumService, PhotoService, UserService]
 })
 export class AlbumsModule {
 }
