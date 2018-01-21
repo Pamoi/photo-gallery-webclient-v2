@@ -3,14 +3,24 @@ import { AuthService, LoginStatus } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppConfigService } from '../../core/shared/app-config.service';
 import { AuthUser } from './auth-user.model';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
+import { CoreModule } from '../../core/core.module';
 
+const routerStub = {
+  navigateByUrl() {
+  }
+};
 
 describe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AuthService, AppConfigService]
+      imports: [HttpClientTestingModule, CoreModule],
+      providers: [AuthService, AppConfigService, ToastService, {
+        provide: Router,
+        useValue: routerStub
+      }]
     });
   });
 
@@ -27,33 +37,53 @@ describe('AuthService', () => {
   }));
 
   it('should load user from localStorage on creation',
-    inject([HttpClient, AppConfigService], (http: HttpClient, appConfig: AppConfigService) => {
-      const user = new AuthUser();
-      const token = 'MyToKeN';
-      user.username = 'Toto';
-      user.id = 123;
-      user.token = token;
-      user.admin = true;
+    inject([HttpClient, AppConfigService, Router, ToastService],
+      (http: HttpClient, appConfig: AppConfigService, router: Router, toast: ToastService) => {
+        const user = new AuthUser();
+        const token = 'header.e30.signature';
+        user.username = 'Toto';
+        user.id = 123;
+        user.token = token;
+        user.admin = true;
 
-      localStorage.setItem(AuthService.USER_KEY, JSON.stringify(user));
+        localStorage.setItem(AuthService.USER_KEY, JSON.stringify(user));
 
-      const service = new AuthService(http, appConfig);
+        const service = new AuthService(http, appConfig, router, toast);
 
-      expect(service.isLoggedIn).toEqual(true);
-      expect(service.getUserId()).toEqual(123);
-      expect(service.getUsername()).toEqual('Toto');
-      expect(service.getToken()).toEqual(token);
-      expect(service.isAdmin()).toEqual(true);
+        expect(service.isLoggedIn).toEqual(true);
+        expect(service.getUserId()).toEqual(123);
+        expect(service.getUsername()).toEqual('Toto');
+        expect(service.getToken()).toEqual(token);
+        expect(service.isAdmin()).toEqual(true);
 
-      expect(localStorage.getItem(AuthService.TOKEN_KEY)).toEqual(token);
+        expect(localStorage.getItem(AuthService.TOKEN_KEY)).toEqual(token);
     }));
+
+  it('should not load user on creation if token has expired',
+    inject([HttpClient, AppConfigService, Router, ToastService],
+      (http: HttpClient, appConfig: AppConfigService, router: Router, toast: ToastService) => {
+        const user = new AuthUser();
+        const token = 'header.eyJleHAiOjF9.signature';
+        user.username = 'Toto';
+        user.id = 123;
+        user.token = token;
+        user.admin = true;
+
+        localStorage.setItem(AuthService.USER_KEY, JSON.stringify(user));
+
+        const service = new AuthService(http, appConfig, router, toast);
+
+        expect(service.isLoggedIn).toEqual(false);
+        expect(localStorage.getItem(AuthService.TOKEN_KEY)).toBeNull();
+        expect(localStorage.getItem(AuthService.USER_KEY)).toBeNull();
+      }));
 
   it('should send request on login',
     async(
       inject([AuthService, AppConfigService, HttpTestingController],
         (service: AuthService, appConfig: AppConfigService, httpMock: HttpTestingController) => {
           const user = new AuthUser();
-          const token = 'MyToKeN';
+          const token = 'header.e30.signature';
           user.username = 'Toto';
           user.id = 123;
           user.token = token;
@@ -153,10 +183,11 @@ describe('AuthService', () => {
           req.error(new ErrorEvent('Error'));
         })));
 
-  it('should clear localStorage on logout',
-    inject([HttpClient, AppConfigService], (http: HttpClient, appConfig: AppConfigService) => {
+  it('should clear localStorage, show toast and redirect on logout',
+    inject([HttpClient, AppConfigService, Router, ToastService],
+      (http: HttpClient, appConfig: AppConfigService, router: Router, toast: ToastService) => {
       const user = new AuthUser();
-      const token = 'MyToKeN';
+      const token = 'header.e30.signature';
       user.username = 'Toto';
       user.id = 123;
       user.token = token;
@@ -164,20 +195,17 @@ describe('AuthService', () => {
 
       localStorage.setItem(AuthService.USER_KEY, JSON.stringify(user));
 
-      const service = new AuthService(http, appConfig);
+      const routerSpy = spyOn(router, 'navigateByUrl');
+      const toastSpy = spyOn(toast, 'toast');
 
-      expect(service.isLoggedIn).toEqual(true);
-      expect(service.getUserId()).toEqual(123);
-      expect(service.getUsername()).toEqual('Toto');
-      expect(service.getToken()).toEqual(token);
-      expect(service.isAdmin()).toEqual(true);
-
-      expect(localStorage.getItem(AuthService.TOKEN_KEY)).toEqual(token);
+      const service = new AuthService(http, appConfig, router, toast);
 
       service.logout();
 
       expect(localStorage.getItem(AuthService.USER_KEY)).toBeNull();
       expect(localStorage.getItem(AuthService.TOKEN_KEY)).toBeNull();
       expect(service.isLoggedIn).toEqual(false);
+      expect(toastSpy).toHaveBeenCalledWith('Vous avez été déconnecté.', ToastType.Info, ToastDuration.Medium);
+      expect(routerSpy).toHaveBeenCalledWith('/');
     }));
 });

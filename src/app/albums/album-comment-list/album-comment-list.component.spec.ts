@@ -14,6 +14,12 @@ import { CoreModule } from '../../core/core.module';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 import { Observable } from 'rxjs/Observable';
 
+const authServiceStub = {
+  isLoggedIn: false,
+  getUserId() {
+    return 2;
+  }
+};
 describe('AlbumCommentListComponent', () => {
   let component: AlbumCommentListComponent;
   let fixture: ComponentFixture<AlbumCommentListComponent>;
@@ -24,7 +30,10 @@ describe('AlbumCommentListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, CoreModule],
-      providers: [AuthService, AlbumService, HttpClient, HttpHandler, AppConfigService, ToastService],
+      providers: [AlbumService, HttpClient, HttpHandler, AppConfigService, ToastService, {
+        provide: AuthService,
+        useValue: authServiceStub
+      }],
       declarations: [AlbumCommentListComponent]
     })
       .compileComponents();

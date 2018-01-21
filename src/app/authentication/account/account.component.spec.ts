@@ -2,12 +2,19 @@ import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core
 
 import { AccountComponent } from './account.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AppConfigService } from '../../core/shared/app-config.service';
 import { AuthService, LoginStatus } from '../shared/auth.service';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
 import { CoreModule } from '../../core/core.module';
+
+const authServiceStub = {
+  isLoggedIn: false,
+  setPassword() {
+  },
+  getUsername(): string {
+    return '';
+  }
+};
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
@@ -17,7 +24,10 @@ describe('AccountComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, ReactiveFormsModule, CoreModule],
-      providers: [AuthService, AppConfigService, HttpClient, HttpHandler],
+      providers: [{
+        provide: AuthService,
+        useValue: authServiceStub
+      }],
       declarations: [AccountComponent]
     })
       .compileComponents();

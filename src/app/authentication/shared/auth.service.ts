@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 import 'rxjs/add/operator/map';
+import { Router } from '@angular/router';
+import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +24,8 @@ export class AuthService {
 
   private user: AuthUser;
 
-  constructor(private http: HttpClient, private appConfig: AppConfigService) {
+  constructor(private http: HttpClient, private appConfig: AppConfigService, private router: Router,
+              private toast: ToastService) {
     const userString = localStorage.getItem(AuthService.USER_KEY);
 
     try {
@@ -33,11 +36,14 @@ export class AuthService {
       this.user.id = userObject.id;
       this.user.admin = userObject.admin;
       this.user.token = userObject.token;
+      this.verifyToken(this.user.token);
 
       localStorage.setItem(AuthService.TOKEN_KEY, this.user.token);
 
       this.isLoggedIn = true;
     } catch (e) {
+      localStorage.removeItem(AuthService.USER_KEY);
+      localStorage.removeItem(AuthService.TOKEN_KEY);
       this.isLoggedIn = false;
     }
   }
@@ -73,6 +79,9 @@ export class AuthService {
     this.user = null;
     localStorage.removeItem(AuthService.USER_KEY);
     localStorage.removeItem(AuthService.TOKEN_KEY);
+
+    this.toast.toast('Vous avez été déconnecté.', ToastType.Info, ToastDuration.Medium);
+    this.router.navigateByUrl('/');
   }
 
   getUserId(): number {
@@ -114,6 +123,24 @@ export class AuthService {
       }
       return of(LoginStatus.NetworkError);
     };
+  }
+
+  private verifyToken(token: string): void {
+    const parts = token.split('.');
+
+    if (parts.length !== 3) {
+      throw new Error('Wrong number of parts in token');
+    }
+
+    const payload = JSON.parse(atob(parts[1]));
+
+    if (payload.exp) {
+      const now = new Date().getTime() / 1000;
+
+      if (now > payload.exp) {
+        throw new Error('Token has expired');
+      }
+    }
   }
 }
 

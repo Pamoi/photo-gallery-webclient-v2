@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginButtonComponent } from './login-button.component';
 import { AuthService } from '../shared/auth.service';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 
 const authServiceStub = {
   isLoggedIn: false,
@@ -14,16 +13,10 @@ const authServiceStub = {
   }
 };
 
-const routerStub = {
-  navigateByUrl(url: string) {
-  }
-};
-
 describe('LoginButtonComponent', () => {
   let component: LoginButtonComponent;
   let fixture: ComponentFixture<LoginButtonComponent>;
   let auth: AuthService;
-  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,10 +25,6 @@ describe('LoginButtonComponent', () => {
         {
           provide: AuthService,
           useValue: authServiceStub
-        },
-        {
-          provide: Router,
-          useValue: routerStub
         }
       ]
     })
@@ -46,7 +35,6 @@ describe('LoginButtonComponent', () => {
     fixture = TestBed.createComponent(LoginButtonComponent);
     component = fixture.componentInstance;
     auth = fixture.debugElement.injector.get(AuthService);
-    router = fixture.debugElement.injector.get(Router);
   });
 
   it('should create', () => {
@@ -76,10 +64,9 @@ describe('LoginButtonComponent', () => {
     expect(items[1].nativeElement.innerText).toEqual('Déconnexion');
   });
 
-  it('should redirect to home page on logout', () => {
+  it('should call auth service on logout click', () => {
     auth.isLoggedIn = true;
     spyOn(auth, 'getUsername').and.returnValue('Toto');
-    const routerSpy = spyOn(router, 'navigateByUrl');
     const authSpy = spyOn(auth, 'logout');
     fixture.detectChanges();
 
@@ -90,6 +77,5 @@ describe('LoginButtonComponent', () => {
     items[1].nativeElement.click();
 
     expect(authSpy).toHaveBeenCalled();
-    expect(routerSpy).toHaveBeenCalledWith('/');
   });
 });

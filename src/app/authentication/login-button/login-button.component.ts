@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class LoginButtonComponent {
 
-  constructor(private auth: AuthService, private router: Router) {
+  constructor(private auth: AuthService) {
   }
 
   isLoggedIn(): boolean {
@@ -22,6 +22,5 @@ export class LoginButtonComponent {
 
   logout(): void {
     this.auth.logout();
-    this.router.navigateByUrl('/');
   }
 }
