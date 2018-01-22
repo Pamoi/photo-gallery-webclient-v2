@@ -5,14 +5,16 @@
 <div class="image-frame">
   <app-photo [photo]="photo"></app-photo>
 </div>
-<div class="button-bar">
-  <button class="btn btn-dark" (click)="previousPhoto()">
-    <span class="oi oi-chevron-left" title="previous"></span>
-  </button>
-  <button class="btn btn-dark" (click)="close()">
-    <span class="oi oi-x" title="close"></span>
-  </button>
-  <button class="btn btn-dark" (click)="nextPhoto()">
-    <span class="oi oi-chevron-right" title="next"></span>
-  </button>
+
+<span class="oi oi-menu toggle-btn cursor-hover" title="Menu" (click)="toggleMenu()"></span>
+<app-photo-side-menu [photo]="photo" [state]="menuState" (onDelete)="onDelete($event)"></app-photo-side-menu>
+
+<span class="oi oi-x close-btn cursor-hover" title="Fermer" (click)="close()"></span>
+
+<div class="prev-zone cursor-hover" (click)="previousPhoto()">
+  <span class="oi oi-chevron-left arrow-btn" title="Précédent" [@btnState]="buttonState"></span>
+</div>
+
+<div class="next-zone cursor-hover" (click)="nextPhoto()">
+  <span class="oi oi-chevron-right arrow-btn" title="Suivant" [@btnState]="buttonState"></span>
 </div>

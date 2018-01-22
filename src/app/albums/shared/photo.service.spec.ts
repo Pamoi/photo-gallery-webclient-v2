@@ -158,6 +158,35 @@ describe('PhotoService', () => {
           })));
   });
 
+  describe('deletePhoto()', () => {
+    it('should send request to backend and return void',
+      async(
+        inject([HttpTestingController, AppConfigService, PhotoService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: PhotoService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.deletePhoto(666).subscribe();
+
+            const req = httpMock.expectOne('https://mybackend.com/photo/666');
+            expect(req.request.method).toEqual('DELETE');
+            req.flush(null);
+          })));
+
+    it('should throw on error',
+      async(
+        inject([HttpTestingController, AppConfigService, PhotoService],
+          (httpMock: HttpTestingController, appConfig: AppConfigService, service: PhotoService) => {
+            spyOn(appConfig, 'getBackendUrl').and.returnValue('https://mybackend.com');
+
+            service.deletePhoto(666).subscribe(() => fail('Failed request should not succeed'),
+              (e) => expect(e.message).toEqual('Error while deleting photo.'));
+
+            const req = httpMock.expectOne('https://mybackend.com/photo/666');
+            expect(req.request.method).toEqual('DELETE');
+            req.error(new ErrorEvent('Test Error'));
+          })));
+  });
+
   describe('getPhotoUploader()', () => {
     it('should return configured uploader', inject([AppConfigService, PhotoService],
       (appConfig: AppConfigService, service: PhotoService) => {

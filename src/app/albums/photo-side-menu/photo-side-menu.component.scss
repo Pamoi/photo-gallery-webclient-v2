@@ -1,0 +1,43 @@
+@import '../../../../node_modules/bootstrap/scss/bootstrap';
+@import '../../../variables';
+
+.menu {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 250px;
+  background-color: theme-color("dark");
+  color: white;
+  z-index: 10002;
+}
+
+.menu-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  overflow-y: auto;
+  margin-top: 50px;
+  padding: 0 15px;
+}
+
+.menu-header {
+  color: gray("300");
+  display: block;
+}
+
+.menu-data {
+  color: white;
+  display: block;
+  font-size: 1.5rem;
+}
+
+hr {
+  background-color: gray("600");
+}
+
+.menu-btn {
+  display: block;
+  width: 100%;
+}

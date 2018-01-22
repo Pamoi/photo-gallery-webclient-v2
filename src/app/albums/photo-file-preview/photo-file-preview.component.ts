@@ -37,9 +37,9 @@ class SequentialExecutor {
  * orientation = 1 (horizontal) on error.
  *
  * @param {File} file
- * @param {(oritentation: number) => void} callback
+ * @param {(orientation: number) => void} callback
  */
-function getOrientation(file: File, callback: (oritentation: number) => void) {
+function getOrientation(file: File, callback: (orientation: number) => void) {
   const reader = new FileReader();
 
   reader.onloadend = () => {

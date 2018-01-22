@@ -10,6 +10,7 @@ import { AppConfigService } from '../../core/shared/app-config.service';
 import { Photo } from './photo.model';
 import { catchError } from 'rxjs/operators';
 import { Uploader } from './uploader.class';
+import { pipe } from 'rxjs/Rx';
 
 @Injectable()
 export class PhotoService {
@@ -39,6 +40,14 @@ export class PhotoService {
     return uploader;
   }
 
+  deletePhoto(id: number): Observable<void> {
+    return this.http.delete(this.appConfig.getBackendUrl() + '/photo/' + id)
+      .map(() => null)
+      .pipe(
+        catchError(this.throwError('Error while deleting photo.'))
+      );
+  }
+
   private getFile(url: string): Observable<Blob> {
     return this.http.get(url, { responseType: 'blob' }).map(blob => {
       return blob;
@@ -56,6 +65,13 @@ export class PhotoService {
       }
 
       return never();
+    };
+  }
+
+  private throwError<T>(message: string) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      throw new Error(message);
     };
   }
 }

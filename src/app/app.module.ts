@@ -7,6 +7,7 @@ import { AlbumsModule } from './albums/albums.module';
 
 import { AppComponent } from './app.component';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     CoreModule,
     AuthenticationModule,

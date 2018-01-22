@@ -6,23 +6,46 @@ import { AlbumService } from '../shared/album.service';
 
 import { Album } from '../shared/album.model';
 import { Photo } from '../shared/photo.model';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-photo-detail',
   templateUrl: './photo-detail.component.html',
   styleUrls: ['./photo-detail.component.scss'],
-  providers: [Location]
+  providers: [Location],
+  animations: [
+    trigger('btnState', [
+      state('hidden', style({
+        opacity: '0'
+      })),
+      state('visible', style({})),
+      transition('hidden => visible', animate('200ms ease-out')),
+      transition('visible => hidden', animate('200ms ease-in'))
+    ])
+  ]
 })
 
 export class PhotoDetailComponent implements OnInit, OnDestroy {
+  private static HIDE_BUTTON_DELAY = 2000;
+
   album: Album;
-  photo: Photo;
   loadingError: boolean;
+  buttonState = 'visible';
+  menuState = 'hidden';
+
   private index: number;
 
   constructor(private route: ActivatedRoute, private router: Router, private location: Location,
               private albumService: AlbumService) {
+  }
+
+  get photo(): Photo {
+    if (this.album && this.index >= 0) {
+      return this.album.photos[this.index];
+    }
+
+    return null;
   }
 
   ngOnInit(): void {
@@ -40,12 +63,8 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
     }
 
     this.index += 1;
+    this.sanitizeIndex();
 
-    if (this.index >= this.album.photos.length) {
-      this.index = 0;
-    }
-
-    this.photo = this.album.photos[this.index];
     this.updateLocation();
   }
 
@@ -55,12 +74,8 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
     }
 
     this.index -= 1;
+    this.sanitizeIndex();
 
-    if (this.index < 0) {
-      this.index = this.album.photos.length - 1;
-    }
-
-    this.photo = this.album.photos[this.index];
     this.updateLocation();
   }
 
@@ -69,6 +84,23 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
       this.location.back();
     } else {
       this.router.navigateByUrl('/album/' + this.route.snapshot.params['albumId']);
+    }
+  }
+
+  toggleMenu() {
+    this.menuState = this.menuState === 'hidden' ? 'visible' : 'hidden';
+  }
+
+  onDelete(photo: Photo): void {
+    const index = this.album.photos.indexOf(photo);
+    if (index >= 0) {
+      this.album.photos.splice(index, 1);
+    }
+
+    if (this.album.photos.length === 0) {
+      this.close();
+    } else {
+      this.sanitizeIndex();
     }
   }
 
@@ -107,10 +139,25 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
     const id = +this.route.snapshot.params['photoId'];
     this.album.photos.forEach((p, i) => {
       if (p.id === id) {
-        this.photo = p;
         this.index = i;
       }
     });
+
+    this.hideButtons();
+  }
+
+  private sanitizeIndex(): void {
+    if (this.index >= this.album.photos.length) {
+      this.index = 0;
+    } else if (this.index < 0) {
+      this.index = this.album.photos.length - 1;
+    }
+  }
+
+  private hideButtons(): void {
+    setTimeout(() => {
+      this.buttonState = 'hidden';
+    }, PhotoDetailComponent.HIDE_BUTTON_DELAY);
   }
 
   private updateLocation(): void {

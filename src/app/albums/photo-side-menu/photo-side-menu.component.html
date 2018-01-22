@@ -1,0 +1,26 @@
+<a #downloadLink hidden download></a>
+
+<div class="menu" [@menuState]="state">
+  <div class="menu-container">
+    <span class="menu-header">Auteur</span>
+    <span class="menu-data">{{photo?.author.username}}</span>
+    <hr>
+
+    <span class="menu-header">Date</span>
+    <span class="menu-data">{{photo?.date | date:'d.M.y'}}</span>
+    <hr>
+
+    <span class="menu-header">Actions</span>
+    <button type="button" class="btn btn-primary menu-btn mb-2 mt-2" (click)="downloadPhoto()">
+      <span class="oi oi-cloud-download" title="download"></span>
+      Télécharger
+      <app-spinner *ngIf="downloading" [type]="'button'"></app-spinner>
+    </button>
+
+    <button *ngIf="isUserAuthor()" type="button" class="btn btn-danger menu-btn mb-2" (click)="deletePhoto()">
+      <span class="oi oi-trash" title="delete"></span>
+      Supprimer
+      <app-spinner *ngIf="deleting" [type]="'button'"></app-spinner>
+    </button>
+  </div>
+</div>

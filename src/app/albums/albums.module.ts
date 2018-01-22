@@ -28,6 +28,7 @@ import { AlbumSearchListComponent } from './album-search-list/album-search-list.
 import { PhotoFilePreviewComponent } from './photo-file-preview/photo-file-preview.component';
 import { PhotoCoverComponent } from './photo-cover/photo-cover.component';
 import { PhotoThumbnailComponent } from './photo-thumbnail/photo-thumbnail.component';
+import { PhotoSideMenuComponent } from './photo-side-menu/photo-side-menu.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { PhotoThumbnailComponent } from './photo-thumbnail/photo-thumbnail.compo
     PhotoFilePreviewComponent,
     PhotoCoverComponent,
     PhotoThumbnailComponent,
+    PhotoSideMenuComponent,
   ],
   imports: [
     AlbumsRoutingModule,

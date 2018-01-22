@@ -14,6 +14,7 @@ import { By } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const locationStub = {
   back(): void {
@@ -37,7 +38,7 @@ describe('PhotoDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, BrowserAnimationsModule],
       declarations: [PhotoDetailComponent],
       providers: [AlbumService, PhotoService, HttpClient, HttpHandler, AppConfigService, {
         provide: ActivatedRoute, useValue: {
@@ -59,16 +60,16 @@ describe('PhotoDetailComponent', () => {
     router = fixture.debugElement.injector.get(Router);
   });
 
-  it('should create', () => {
+  it('should create', async(() => {
     const album = new Album();
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
-  });
+  }));
 
-  it('should set body background color to black', () => {
+  it('should set body background color to black', async(() => {
     const album = new Album();
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
@@ -78,7 +79,7 @@ describe('PhotoDetailComponent', () => {
 
     component.ngOnDestroy();
     expect(document.body.style.backgroundColor).toEqual('');
-  });
+  }));
 
   it('should query album on creation', fakeAsync(() => {
     const album = new Album();
@@ -90,6 +91,22 @@ describe('PhotoDetailComponent', () => {
 
     expect(spy).toHaveBeenCalledWith(13);
     expect(component.album).toEqual(album);
+    tick(2000);
+  }));
+
+  it('should hide buttons after setting album', fakeAsync(() => {
+    const album = new Album();
+    album.photos = [];
+    const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
+    fixture.detectChanges();
+
+    expect(component.buttonState).toEqual('visible');
+
+    tick();
+    tick(2000);
+
+    expect(component.buttonState).toEqual('hidden');
   }));
 
   it('should get photo from album', fakeAsync(() => {
@@ -105,9 +122,31 @@ describe('PhotoDetailComponent', () => {
     expect(spy).toHaveBeenCalledWith(13);
     expect(component.album).toEqual(album);
     expect(component.photo).toEqual(photo);
+
+    tick(2000);
   }));
 
-  it('should call nextPhoto() on button click', fakeAsync(() => {
+  it('should toggle menu visibility on menu button click', async(() => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    fixture.detectChanges();
+
+    expect(component.menuState).toEqual('hidden');
+
+    const menuBtn = fixture.debugElement.query(By.css('.toggle-btn'));
+    menuBtn.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    expect(component.menuState).toEqual('visible');
+
+    menuBtn.triggerEventHandler('click', null);
+    fixture.detectChanges();
+
+    expect(component.menuState).toEqual('hidden');
+  }));
+
+  it('should call nextPhoto() on next zone click', fakeAsync(() => {
     const album = new Album();
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
@@ -115,16 +154,16 @@ describe('PhotoDetailComponent', () => {
 
     const spy = spyOn(component, 'nextPhoto');
 
-    const bar = fixture.debugElement.query(By.css('.button-bar'));
-    const nextBtn = bar.children[2];
+    const nextBtn = fixture.debugElement.query(By.css('.next-zone'));
     nextBtn.triggerEventHandler('click', null);
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
+    tick(2000);
   }));
 
-  it('should call previousPhoto() on button click', fakeAsync(() => {
+  it('should call previousPhoto() on previous zone click', fakeAsync(() => {
     const album = new Album();
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
@@ -132,13 +171,13 @@ describe('PhotoDetailComponent', () => {
 
     const spy = spyOn(component, 'previousPhoto');
 
-    const bar = fixture.debugElement.query(By.css('.button-bar'));
-    const prevBtn = bar.children[0];
+    const prevBtn = fixture.debugElement.query(By.css('.prev-zone'));
     prevBtn.triggerEventHandler('click', null);
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalled();
+    tick(2000);
   }));
 
   it('should call Location.back() on close button click if album was shown', fakeAsync(() => {
@@ -151,14 +190,15 @@ describe('PhotoDetailComponent', () => {
     const locationSpy = spyOn(location, 'back');
     const routerSpy = spyOn(router, 'navigateByUrl');
 
-    const bar = fixture.debugElement.query(By.css('.button-bar'));
-    const closeBtn = bar.children[1];
+    const closeBtn = fixture.debugElement.query(By.css('.close-btn'));
     closeBtn.triggerEventHandler('click', null);
 
     fixture.detectChanges();
 
     expect(locationSpy).toHaveBeenCalled();
     expect(routerSpy).not.toHaveBeenCalled();
+
+    tick(2000);
   }));
 
   it('should call Router.navigateByUrl() on close button click if album was not shown', fakeAsync(() => {
@@ -171,19 +211,21 @@ describe('PhotoDetailComponent', () => {
     const locationSpy = spyOn(location, 'back');
     const routerSpy = spyOn(router, 'navigateByUrl');
 
-    const bar = fixture.debugElement.query(By.css('.button-bar'));
-    const closeBtn = bar.children[1];
+    const closeBtn = fixture.debugElement.query(By.css('.close-btn'));
     closeBtn.triggerEventHandler('click', null);
 
     fixture.detectChanges();
 
     expect(locationSpy).not.toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith('/album/13');
+
+    tick(2000);
   }));
 
   it('should show error message if loading fails', fakeAsync(() => {
     const album = new Album();
     album.id = 13;
+    album.photos = [];
     album.title = 'THE album';
     const spy = spyOn(albumService, 'getAlbum').and.returnValue(Observable.throw(new Error('Error')));
 
@@ -206,6 +248,8 @@ describe('PhotoDetailComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2);
     expect(component.loadingError).toEqual(false);
     expect(component.album).toEqual(album);
+
+    tick(2000);
   }));
 
   describe('nextPhoto()', () => {
@@ -227,6 +271,8 @@ describe('PhotoDetailComponent', () => {
       component.nextPhoto();
 
       expect(component.photo).toEqual(photo2);
+
+      tick(2000);
     }));
 
     it('should loop at the end of photo list', fakeAsync(() => {
@@ -248,6 +294,8 @@ describe('PhotoDetailComponent', () => {
       component.nextPhoto();
 
       expect(component.photo).toEqual(photo1);
+
+      tick(2000);
     }));
 
     it('should not crash on empty photo list', fakeAsync(() => {
@@ -265,6 +313,8 @@ describe('PhotoDetailComponent', () => {
       component.nextPhoto();
 
       expect(component.photo).toBeUndefined();
+
+      tick(2000);
     }));
 
     it('should update location', fakeAsync(() => {
@@ -287,6 +337,8 @@ describe('PhotoDetailComponent', () => {
       component.nextPhoto();
 
       expect(locationSpy).toHaveBeenCalledWith('/album/13/photo/777');
+
+      tick(2000);
     }));
   });
 
@@ -310,6 +362,8 @@ describe('PhotoDetailComponent', () => {
       component.previousPhoto();
 
       expect(component.photo).toEqual(photo1);
+
+      tick(2000);
     }));
 
     it('should loop at the beginning of photo list', fakeAsync(() => {
@@ -331,6 +385,8 @@ describe('PhotoDetailComponent', () => {
       component.previousPhoto();
 
       expect(component.photo).toEqual(photo2);
+
+      tick(2000);
     }));
 
     it('should not crash on empty photo list', fakeAsync(() => {
@@ -348,6 +404,8 @@ describe('PhotoDetailComponent', () => {
       component.previousPhoto();
 
       expect(component.photo).toBeUndefined();
+
+      tick(2000);
     }));
 
     it('should update location', fakeAsync(() => {
@@ -371,6 +429,54 @@ describe('PhotoDetailComponent', () => {
       component.previousPhoto();
 
       expect(locationSpy).toHaveBeenCalledWith('/album/13/photo/777');
+
+      tick(2000);
+    }));
+  });
+
+  describe('onDelete()', () => {
+    it('should delete photo', fakeAsync(() => {
+      const album = new Album();
+      const photo1 = new Photo();
+      const photo2 = new Photo();
+      photo1.id = 777;
+      photo2.id = 666;
+      album.photos = [photo1, photo2];
+      spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+
+      fixture.detectChanges();
+      tick();
+
+      expect(component.photo).toEqual(photo2);
+
+      component.onDelete(photo2);
+
+      expect(component.photo).toEqual(photo1);
+      expect(component.album.photos.length).toEqual(1);
+
+      tick(2000);
+    }));
+
+    it('should delete photo', fakeAsync(() => {
+      const album = new Album();
+      const photo = new Photo();
+      photo.id = 666;
+      album.photos = [photo];
+      spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+      const spy = spyOn(component, 'close');
+
+        fixture.detectChanges();
+      tick();
+
+      expect(component.photo).toEqual(photo);
+
+      component.onDelete(photo);
+
+      expect(spy).toHaveBeenCalled();
+      expect(component.photo).toBeUndefined();
+      expect(component.album.photos.length).toEqual(0);
+
+      tick(2000);
     }));
   });
 });
