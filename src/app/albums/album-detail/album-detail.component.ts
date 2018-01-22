@@ -67,6 +67,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
     this.album = null;
     this.loading = true;
     this.loadingError = false;
+    this.albumService.albumWasShown = true;
 
     this.albumService.getAlbum(this.albumId).subscribe(album => {
       this.album = album;

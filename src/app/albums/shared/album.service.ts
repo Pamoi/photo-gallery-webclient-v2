@@ -17,6 +17,7 @@ import { Album } from './album.model';
 export class AlbumService {
   localAlbumList: Album[] = [];
   listScrollOffset = 0;
+  albumWasShown = false;
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) {
   }

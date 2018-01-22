@@ -4,7 +4,6 @@ import { PhotoService } from '../shared/photo.service';
 import { AppConfigService } from '../../core/shared/app-config.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { PhotoDetailComponent } from './photo-detail.component';
-import { PhotoComponent } from '../photo/photo.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlbumService } from '../shared/album.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +13,6 @@ import { Photo } from '../shared/photo.model';
 import { By } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
-import { CoreModule } from '../../core/core.module';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 const locationStub = {
@@ -143,13 +141,15 @@ describe('PhotoDetailComponent', () => {
     expect(spy).toHaveBeenCalled();
   }));
 
-  it('should call Location.back() on close button click', fakeAsync(() => {
+  it('should call Location.back() on close button click if album was shown', fakeAsync(() => {
     const album = new Album();
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    albumService.albumWasShown = true;
     fixture.detectChanges();
 
-    const spy = spyOn(location, 'back');
+    const locationSpy = spyOn(location, 'back');
+    const routerSpy = spyOn(router, 'navigateByUrl');
 
     const bar = fixture.debugElement.query(By.css('.button-bar'));
     const closeBtn = bar.children[1];
@@ -157,7 +157,28 @@ describe('PhotoDetailComponent', () => {
 
     fixture.detectChanges();
 
-    expect(spy).toHaveBeenCalled();
+    expect(locationSpy).toHaveBeenCalled();
+    expect(routerSpy).not.toHaveBeenCalled();
+  }));
+
+  it('should call Router.navigateByUrl() on close button click if album was not shown', fakeAsync(() => {
+    const album = new Album();
+    album.photos = [];
+    spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    albumService.albumWasShown = false;
+    fixture.detectChanges();
+
+    const locationSpy = spyOn(location, 'back');
+    const routerSpy = spyOn(router, 'navigateByUrl');
+
+    const bar = fixture.debugElement.query(By.css('.button-bar'));
+    const closeBtn = bar.children[1];
+    closeBtn.triggerEventHandler('click', null);
+
+    fixture.detectChanges();
+
+    expect(locationSpy).not.toHaveBeenCalled();
+    expect(routerSpy).toHaveBeenCalledWith('/album/13');
   }));
 
   it('should show error message if loading fails', fakeAsync(() => {

@@ -60,11 +60,13 @@ describe('AlbumDetailComponent', () => {
     album.id = 13;
     album.title = 'THE album';
     const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
+    expect(albumService.albumWasShown).toEqual(false);
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledWith(13);
     expect(component.album).toEqual(album);
+    expect(albumService.albumWasShown).toEqual(true);
   }));
 
   it('should show message if the album does not contain photos', fakeAsync(() => {
