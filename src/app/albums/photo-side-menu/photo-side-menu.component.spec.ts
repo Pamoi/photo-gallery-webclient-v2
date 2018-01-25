@@ -6,7 +6,6 @@ import { AuthService } from '../../authentication/shared/auth.service';
 import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from '../../core/core.module';
-import { SpinnerComponent } from '../../core/spinner/spinner.component';
 import { Photo } from '../shared/photo.model';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs/observable/of';
