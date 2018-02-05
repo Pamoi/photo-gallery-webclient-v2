@@ -19,6 +19,7 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   loading = false;
   loadingError = false;
   suppressing = false;
+  shouldScroll = false;
 
   // Must be equal to the total width (including margins) of thumbnail element.
   thumbnailWidth = 202;
@@ -34,17 +35,29 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.albumId = +params['id'];
+      this.shouldScroll = this.albumId === this.albumService.lastAlbumShownId;
       this.getAlbum();
     });
   }
 
   ngAfterViewInit(): void {
     this.centerThumbnailContainer();
+
+    if (this.shouldScroll) {
+      this.restoreScrollState();
+    } else {
+      this.scrollToTop();
+    }
   }
 
   @HostListener('window:resize')
   onResize(): void {
     this.centerThumbnailContainer();
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    this.albumService.albumScrollOffset = window.scrollY;
   }
 
   isUserAuthor(): boolean {
@@ -64,14 +77,17 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.album = null;
-    this.loading = true;
     this.loadingError = false;
-    this.albumService.albumWasShown = true;
+    this.loading = true;
 
     this.albumService.getAlbum(this.albumId).subscribe(album => {
       this.album = album;
+      this.albumService.lastAlbumShownId = album.id;
       this.loading = false;
+
+      if (!this.shouldScroll) {
+        this.scrollToTop();
+      }
     }, () => {
       this.loading = false;
       this.loadingError = true;
@@ -105,6 +121,14 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
           ToastType.Danger, ToastDuration.Medium);
       });
     }
+  }
+
+  private scrollToTop(): void {
+    window.scrollTo(0, 0);
+  }
+
+  private restoreScrollState(): void {
+    window.scrollTo(0, this.albumService.albumScrollOffset);
   }
 
   private centerThumbnailContainer(): void {

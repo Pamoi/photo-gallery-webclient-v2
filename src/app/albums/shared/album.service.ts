@@ -7,30 +7,40 @@ import { catchError } from 'rxjs/operators';
 import { AppConfigService } from '../../core/shared/app-config.service';
 
 import { Album } from './album.model';
+import { of } from 'rxjs/observable/of';
 
 /**
  * The AlbumService offers methods to get, post, update and delete albums. In addition
- * it maintains a local list of the loaded albums which is updated when albums are
- * fetched or modified locally.
+ * it maintains a local list and a cache indexed by album id of the loaded albums which
+ * are updated when albums are fetched or modified locally.
  */
 @Injectable()
 export class AlbumService {
+  private albumCache = new Map<number, Album>();
+
   localAlbumList: Album[] = [];
   listScrollOffset = 0;
-  albumWasShown = false;
+  lastAlbumShownId = 0;
+  albumScrollOffset = 0;
 
   constructor(private http: HttpClient, private appConfig: AppConfigService) {
   }
 
   getMoreAlbums(): Observable<void> {
     return this.getAlbumsBefore(this.getOldestDate().toISOString()).map(albums => {
-      albums.forEach(a => this.localAlbumList.push(a));
+      albums.forEach(a => {
+        this.localAlbumList.push(a);
+        this.albumCache[a.id] = a;
+      });
     });
   }
 
   getNewAlbums(): Observable<void> {
     return this.getAlbumsAfter(this.getNewestDate().toISOString()).map(albums => {
-      albums.forEach(a => this.localAlbumList.unshift(a));
+      albums.forEach(a => {
+        this.localAlbumList.unshift(a);
+        this.albumCache[a.id] = a;
+      });
     });
   }
 
@@ -57,6 +67,12 @@ export class AlbumService {
   }
 
   getAlbum(id: number): Observable<Album> {
+    const album = this.albumCache[id];
+
+    if (album) {
+      return of(album);
+    }
+
     return this.http.get<Album>(this.appConfig.getBackendUrl() + '/album/' + id)
       .map(a => this.updateLocalAlbum(a))
       .pipe(
@@ -103,9 +119,14 @@ export class AlbumService {
   }
 
   searchAlbum(term: string): Observable<Album[]> {
-    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/search/' + term).pipe(
-      catchError(this.throwError<Album[]>('An error occurred while searching albums.'))
-    );
+    return this.http.get<Album[]>(this.appConfig.getBackendUrl() + '/album/search/' + term)
+      .map(albums => {
+        albums.forEach(a => this.updateLocalAlbum(a));
+        return albums;
+      })
+      .pipe(
+        catchError(this.throwError<Album[]>('An error occurred while searching albums.'))
+      );
   }
 
   commentAlbum(id: number, text: string): Observable<Album> {
@@ -127,6 +148,8 @@ export class AlbumService {
   }
 
   private updateLocalAlbum(album: Album): Album {
+    this.albumCache[album.id] = album;
+
     const index = this.localAlbumList.map(b => b.id).indexOf(album.id);
     if (index >= 0) {
       this.localAlbumList[index] = album;
@@ -136,6 +159,8 @@ export class AlbumService {
   }
 
   private deleteLocalAlbum(id: number): void {
+    this.albumCache.delete(id);
+
     const index = this.localAlbumList.map(b => b.id).indexOf(id);
     if (index >= 0) {
       this.localAlbumList.splice(index, 1);
@@ -143,10 +168,10 @@ export class AlbumService {
   }
 
   private deleteLocalComment(albumId: number, commentId: number): void {
-    const index = this.localAlbumList.map(b => b.id).indexOf(albumId);
-    if (index >= 0) {
-      this.localAlbumList[index].comments =
-        this.localAlbumList[index].comments.filter(c => c.id !== commentId);
+    const album = this.albumCache[albumId];
+
+    if (album) {
+      album.comments = album.comments.filter(c => c.id !== commentId);
     }
   }
 

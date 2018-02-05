@@ -60,13 +60,13 @@ describe('AlbumDetailComponent', () => {
     album.id = 13;
     album.title = 'THE album';
     const spy = spyOn(albumService, 'getAlbum').and.returnValue(of(album));
-    expect(albumService.albumWasShown).toEqual(false);
+    expect(albumService.lastAlbumShownId).toEqual(0);
 
     fixture.detectChanges();
 
     expect(spy).toHaveBeenCalledWith(13);
     expect(component.album).toEqual(album);
-    expect(albumService.albumWasShown).toEqual(true);
+    expect(albumService.lastAlbumShownId).toEqual(13);
   }));
 
   it('should show message if the album does not contain photos', fakeAsync(() => {
@@ -287,5 +287,52 @@ describe('AlbumDetailComponent', () => {
     expect(linkSpy).not.toHaveBeenCalled();
     expect(toastSpy).toHaveBeenCalledWith('Une erreur est survenue lors du téléchargement de l\'album',
       ToastType.Danger, ToastDuration.Medium);
+  }));
+
+  it('should store scroll state', fakeAsync(() => {
+    albumService.albumScrollOffset = 1;
+    spyOnProperty(window, 'scrollY', 'get').and.returnValue(123);
+
+    component.onScroll();
+
+    expect(albumService.albumScrollOffset).toEqual(123);
+  }));
+
+  it('should restore scroll state if album was show before', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [new Photo()];
+
+    albumService.albumScrollOffset = 123;
+    albumService.lastAlbumShownId = 13;
+    const spy = spyOn(window, 'scrollTo');
+
+    fixture.detectChanges();
+    tick();
+
+    component.album = album;
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledWith(0, 123);
+  }));
+
+  it('should scroll to top if album is not the last shown one', fakeAsync(() => {
+    const album = new Album();
+    album.id = 13;
+    album.title = 'THE album';
+    album.photos = [new Photo()];
+
+    albumService.albumScrollOffset = 123;
+    albumService.lastAlbumShownId = 12;
+    const spy = spyOn(window, 'scrollTo');
+
+    fixture.detectChanges();
+    tick();
+
+    component.album = album;
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledWith(0, 0);
   }));
 });

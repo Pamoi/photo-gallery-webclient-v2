@@ -182,9 +182,10 @@ describe('PhotoDetailComponent', () => {
 
   it('should call Location.back() on close button click if album was shown', fakeAsync(() => {
     const album = new Album();
+    album.id = 123;
     album.photos = [];
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
-    albumService.albumWasShown = true;
+    albumService.lastAlbumShownId = 123;
     fixture.detectChanges();
 
     const locationSpy = spyOn(location, 'back');
@@ -204,8 +205,8 @@ describe('PhotoDetailComponent', () => {
   it('should call Router.navigateByUrl() on close button click if album was not shown', fakeAsync(() => {
     const album = new Album();
     album.photos = [];
+    album.id = 123;
     spyOn(albumService, 'getAlbum').and.returnValue(of(album));
-    albumService.albumWasShown = false;
     fixture.detectChanges();
 
     const locationSpy = spyOn(location, 'back');

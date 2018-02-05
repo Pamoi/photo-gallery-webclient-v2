@@ -80,7 +80,7 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
   }
 
   close(): void {
-    if (this.albumService.albumWasShown) {
+    if (this.albumService.lastAlbumShownId !== 0) {
       this.location.back();
     } else {
       this.router.navigateByUrl('/album/' + this.route.snapshot.params['albumId']);
