@@ -403,8 +403,8 @@ describe('AlbumService', () => {
             // Album should not be in cache and trigger a request
             service.getAlbum(666).subscribe();
 
-            const req = httpMock.expectOne('https://mybackend.com/album/666');
-            expect(req.request.method).toEqual('GET');
+            const req2 = httpMock.expectOne('https://mybackend.com/album/666');
+            expect(req2.request.method).toEqual('GET');
           })));
 
     it('should fail on error',
