@@ -36,7 +36,7 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
   menuState = 'hidden';
   isSlideshowRunning = false
 
-  private intervalId: number = undefined
+  private intervalId: number;
   private index: number;
 
   constructor(private route: ActivatedRoute, private router: Router, private location: Location,
@@ -177,7 +177,7 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
   }
 
   private startSlideshow(): void {
-    this.intervalId = setInterval(() => this.nextPhoto(), PhotoDetailComponent.SLIDESHOW_DELAY)
+    this.intervalId = window.setInterval(() => this.nextPhoto(), PhotoDetailComponent.SLIDESHOW_DELAY)
   }
 
   private stopSlideShow(): void {

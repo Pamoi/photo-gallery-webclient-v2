@@ -2,7 +2,8 @@ import { AuthService } from './auth.service';
 import { AppConfigService } from '../../core/shared/app-config.service';
 import { inject, TestBed } from '@angular/core/testing';
 import { AuthInterceptor } from './auth.interceptor';
-import { HttpRequest } from '@angular/common/http';
+import { HttpRequest, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { never } from 'rxjs/observable/never';
 
 
@@ -19,7 +20,8 @@ const authServiceStub = {
 };
 
 const nextHandler = {
-  handle(req: HttpRequest) {
+  handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+    return Observable.never()
   }
 };
 
@@ -37,7 +39,7 @@ describe('AuthInterceptor', () => {
   it('should set token header on API requests', inject([AuthInterceptor],
     (interceptor: AuthInterceptor) => {
       const req = new HttpRequest('GET', 'https://mybackend.com/album/1');
-      const spy = spyOn(nextHandler, 'handle').and.callFake((r: HttpRequest) => {
+      const spy = spyOn(nextHandler, 'handle').and.callFake((r: HttpRequest<any>) => {
         expect(r.headers.get('X-AUTH-TOKEN')).toEqual('1234isNotASecureToken');
         return never();
       });
@@ -50,7 +52,7 @@ describe('AuthInterceptor', () => {
   it('should not set token header on other requests', inject([AuthInterceptor],
     (interceptor: AuthInterceptor) => {
       const req = new HttpRequest('GET', 'https://somedomain.com/some/route');
-      const spy = spyOn(nextHandler, 'handle').and.callFake((r: HttpRequest) => {
+      const spy = spyOn(nextHandler, 'handle').and.callFake((r: HttpRequest<any>) => {
         expect(r.headers.get('X-AUTH-TOKEN')).toBeNull();
         return never();
       });

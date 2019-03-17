@@ -26,7 +26,7 @@ export class PhotoSideMenuComponent implements OnDestroy {
   @Input() isSlideshowRunning = false;
 
   @Output() onDelete = new EventEmitter<Photo>();
-  @Output() toggleSlideshow = new EventEmitter<Any>();
+  @Output() toggleSlideshow = new EventEmitter<any>();
 
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
