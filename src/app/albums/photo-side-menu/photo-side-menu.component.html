@@ -17,6 +17,12 @@
       <app-spinner *ngIf="downloading" [type]="'button'"></app-spinner>
     </button>
 
+    <button type="button" class="btn btn-primary menu-btn mb-2 mt-2" (click)="onToggleSlideshow()">
+      <span class="oi oi-media-play" title="start slideshow" *ngIf="!isSlideshowRunning"></span>
+      <span class="oi oi-media-pause" title="stop slideshow" *ngIf="isSlideshowRunning"></span>
+      Diaporama
+    </button>
+
     <button *ngIf="isUserAuthor()" type="button" class="btn btn-danger menu-btn mb-2" (click)="deletePhoto()">
       <span class="oi oi-trash" title="delete"></span>
       Supprimer

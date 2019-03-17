@@ -23,8 +23,10 @@ import { ToastDuration, ToastService, ToastType } from '../../core/shared/toast.
 export class PhotoSideMenuComponent implements OnDestroy {
   @Input() photo: Photo;
   @Input() state = 'hidden';
+  @Input() isSlideshowRunning = false;
 
   @Output() onDelete = new EventEmitter<Photo>();
+  @Output() toggleSlideshow = new EventEmitter<Any>();
 
   @ViewChild('downloadLink') downloadLink: ElementRef;
 
@@ -82,6 +84,10 @@ export class PhotoSideMenuComponent implements OnDestroy {
         ToastType.Danger,
         ToastDuration.Medium);
     });
+  }
+
+  onToggleSlideshow(): void {
+    this.toggleSlideshow.emit();
   }
 
   private triggerDownload(): void {

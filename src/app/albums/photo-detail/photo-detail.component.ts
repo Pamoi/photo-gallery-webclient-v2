@@ -28,12 +28,15 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 export class PhotoDetailComponent implements OnInit, OnDestroy {
   private static HIDE_BUTTON_DELAY = 2000;
+  private static SLIDESHOW_DELAY = 5000;
 
   album: Album;
   loadingError: boolean;
   buttonState = 'visible';
   menuState = 'hidden';
+  isSlideshowRunning = false
 
+  private intervalId: number = undefined
   private index: number;
 
   constructor(private route: ActivatedRoute, private router: Router, private location: Location,
@@ -87,8 +90,17 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleMenu() {
+  toggleMenu(): void {
     this.menuState = this.menuState === 'hidden' ? 'visible' : 'hidden';
+  }
+
+  toggleSlideshow(): void {
+    if (this.isSlideshowRunning) {
+      this.stopSlideShow()
+    } else {
+      this.startSlideshow()
+    }
+    this.isSlideshowRunning = !this.isSlideshowRunning
   }
 
   onDelete(photo: Photo): void {
@@ -162,5 +174,13 @@ export class PhotoDetailComponent implements OnInit, OnDestroy {
 
   private updateLocation(): void {
     this.location.replaceState('/album/' + this.album.id + /photo/ + this.photo.id);
+  }
+
+  private startSlideshow(): void {
+    this.intervalId = setInterval(() => this.nextPhoto(), PhotoDetailComponent.SLIDESHOW_DELAY)
+  }
+
+  private stopSlideShow(): void {
+    clearInterval(this.intervalId)
   }
 }
