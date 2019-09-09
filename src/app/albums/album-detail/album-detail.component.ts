@@ -24,10 +24,10 @@ export class AlbumDetailComponent implements OnInit, AfterViewInit {
   // Must be equal to the total width (including margins) of thumbnail element.
   thumbnailWidth = 202;
 
-  @ViewChild('fullWidthContainer', {static: false}) fullWidthContainer: ElementRef;
-  @ViewChild('thumbnailContainer', {static: false}) thumbnailContainer: ElementRef;
-  @ViewChild('downloadLink', {static: false}) downloadLink: ElementRef;
-  @ViewChild('cancelBtn', {static: false}) cancelBtn: ElementRef;
+  @ViewChild('fullWidthContainer', {static: true}) fullWidthContainer: ElementRef;
+  @ViewChild('thumbnailContainer', {static: true}) thumbnailContainer: ElementRef;
+  @ViewChild('downloadLink', {static: true}) downloadLink: ElementRef;
+  @ViewChild('cancelBtn', {static: true}) cancelBtn: ElementRef;
 
   constructor(private route: ActivatedRoute, private router: Router, private albumService: AlbumService,
               private toast: ToastService, private auth: AuthService) {}

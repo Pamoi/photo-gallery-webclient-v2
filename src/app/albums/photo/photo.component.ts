@@ -10,7 +10,7 @@ import { PhotoService } from '../shared/photo.service';
 export class PhotoComponent implements OnDestroy {
   private static SHOW_SPINNER_DELAY = 400;
 
-  @ViewChild('image', {static: false}) image: ElementRef;
+  @ViewChild('image', {static: true}) image: ElementRef;
   loading = false;
 
   private _photo: Photo;

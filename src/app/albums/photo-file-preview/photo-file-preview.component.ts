@@ -117,7 +117,7 @@ export class PhotoFilePreviewComponent implements OnInit, OnDestroy {
   @Input() maxHeight: number;
   ready = false;
 
-  @ViewChild('canvas', {static: false}) private canvas: ElementRef;
+  @ViewChild('canvas', {static: true}) private canvas: ElementRef;
   private url: string;
 
   constructor() {

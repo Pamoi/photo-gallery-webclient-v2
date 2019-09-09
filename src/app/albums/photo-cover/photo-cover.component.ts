@@ -12,7 +12,7 @@ export class PhotoCoverComponent implements OnInit, OnDestroy {
 
   @Input() photo: Photo;
 
-  @ViewChild('image', {static: false}) image: ElementRef;
+  @ViewChild('image', {static: true}) image: ElementRef;
   @ViewChild('placeholder', {static: true}) placeholder: ElementRef;
 
   private objectURL: string;

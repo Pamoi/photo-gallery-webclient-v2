@@ -10,7 +10,7 @@ import { PhotoService } from '../shared/photo.service';
 export class PhotoThumbnailComponent implements OnInit, OnDestroy {
   @Input() photo: Photo;
 
-  @ViewChild('image', {static: false}) image: ElementRef;
+  @ViewChild('image', {static: true}) image: ElementRef;
 
   private objectURL: string;
 

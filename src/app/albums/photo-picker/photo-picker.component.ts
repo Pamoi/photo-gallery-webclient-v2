@@ -10,7 +10,7 @@ export class PhotoPickerComponent implements OnInit {
   @Input() uploader: Uploader;
   @Input() required: boolean;
 
-  @ViewChild('fileButton', {static: false}) fileButton: ElementRef;
+  @ViewChild('fileButton', {static: true}) fileButton: ElementRef;
   allowedExtensions = ['jpg', 'jpeg', 'png'];
 
   US = UploadStatus;
