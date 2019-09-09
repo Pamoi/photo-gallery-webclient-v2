@@ -12,8 +12,8 @@ export class PhotoCoverComponent implements OnInit, OnDestroy {
 
   @Input() photo: Photo;
 
-  @ViewChild('image') image: ElementRef;
-  @ViewChild('placeholder') placeholder: ElementRef;
+  @ViewChild('image', {static: false}) image: ElementRef;
+  @ViewChild('placeholder', {static: true}) placeholder: ElementRef;
 
   private objectURL: string;
   private isImageLoaded = false;

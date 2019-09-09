@@ -43,56 +43,60 @@ function getOrientation(file: File, callback: (orientation: number) => void) {
   const reader = new FileReader();
 
   reader.onloadend = () => {
-    const data = new DataView(reader.result);
-    // Position in file.
-    let index = 0;
-    let orientation = 1;
+    if (reader.result instanceof ArrayBuffer) {
+      const data = new DataView(reader.result);
+      // Position in file.
+      let index = 0;
+      let orientation = 1;
 
-    // Check first 2 bytes to see if image is JPEG.
-    if (reader.result.length < 2 || data.getUint16(index) !== 0xFFD8) {
-      callback(orientation);
-      return;
-    }
+      // Check first 2 bytes to see if image is JPEG.
+      if (reader.result.byteLength < 2 || data.getUint16(index) !== 0xFFD8) {
+        callback(orientation);
+        return;
+      }
 
-    index += 2;
-    // Maximum index to read in file.
-    const max = file.size - 2;
-
-    while (index < max) {
-      const value = data.getUint16(index);
       index += 2;
+      // Maximum index to read in file.
+      const max = file.size - 2;
 
-      if (value === 0xFFE1) {
-        if (data.getUint32(index += 2, false) !== 0x45786966) {
-          // Should not happen, if so return default orientation.
-          callback(orientation);
-          return;
-        }
-
-        const isLittleEndian = data.getUint16(index += 6, false) === 0x4949;
-
-        index += data.getUint32(index + 4, isLittleEndian);
-
-        const tags = data.getUint16(index, isLittleEndian);
+      while (index < max) {
+        const value = data.getUint16(index);
         index += 2;
 
-        for (let i = 0; i < tags; i++) {
-          if (data.getUint16(index + (i * 12), isLittleEndian) === 0x0112) {
-            orientation = data.getUint16(index + (i * 12) + 8, isLittleEndian);
+        if (value === 0xFFE1) {
+          if (data.getUint32(index += 2, false) !== 0x45786966) {
+            // Should not happen, if so return default orientation.
             callback(orientation);
             return;
           }
-        }
-        // tslint:disable:no-bitwise
-      } else if ((value & 0xFF00) !== 0xFF00) {
-        break;
-      } else {
-        index += data.getUint16(index, false);
-      }
-    }
 
-    // Orientation was not found, return default value.
-    callback(orientation);
+          const isLittleEndian = data.getUint16(index += 6, false) === 0x4949;
+
+          index += data.getUint32(index + 4, isLittleEndian);
+
+          const tags = data.getUint16(index, isLittleEndian);
+          index += 2;
+
+          for (let i = 0; i < tags; i++) {
+            if (data.getUint16(index + (i * 12), isLittleEndian) === 0x0112) {
+              orientation = data.getUint16(index + (i * 12) + 8, isLittleEndian);
+              callback(orientation);
+              return;
+            }
+          }
+          // tslint:disable:no-bitwise
+        } else if ((value & 0xFF00) !== 0xFF00) {
+          break;
+        } else {
+          index += data.getUint16(index, false);
+        }
+      }
+
+      // Orientation was not found, return default value.
+      callback(orientation);
+    } else {
+      callback(1);
+    }
   };
 
   reader.readAsArrayBuffer(file);
@@ -113,7 +117,7 @@ export class PhotoFilePreviewComponent implements OnInit, OnDestroy {
   @Input() maxHeight: number;
   ready = false;
 
-  @ViewChild('canvas') private canvas: ElementRef;
+  @ViewChild('canvas', {static: false}) private canvas: ElementRef;
   private url: string;
 
   constructor() {

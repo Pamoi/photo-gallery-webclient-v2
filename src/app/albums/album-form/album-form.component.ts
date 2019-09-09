@@ -23,7 +23,7 @@ export class AlbumFormComponent implements OnInit {
   loading = false;
   isModification = false;
 
-  @ViewChild(NgForm) form: NgForm;
+  @ViewChild(NgForm, {static: false}) form: NgForm;
 
   dateOptions: DatepickerOptions = {
     locale: frLocale,
