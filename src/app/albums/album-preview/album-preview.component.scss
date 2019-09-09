@@ -8,36 +8,31 @@ $textColor: #ffffff;
 $default-card-color: theme-color("dark");
 $altTitleColor: darken($textColor, 20%);
 
-.preview-text {
+.album-container {
   width: 100%;
   color: #ffffff;
   background-color: $default-card-color;
-  padding: 10px 20px;
-  border-top-left-radius: $card-border-radius;
-  border-top-right-radius: $card-border-radius;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.preview-text {
+  width: 100%;
+  color: #ffffff;
 }
 
 .preview-comments {
   width: 100%;
-  background-color: $default-card-color;
-  margin-left: 0px;
+  margin-left: 0;
   color: $textColor;
-  padding-top: 10px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin-bottom: 15px;
-  border-bottom-left-radius: $card-border-radius;
-  border-bottom-right-radius: $card-border-radius;
-  min-height: 20px;
 }
 
 .preview-comment {
   background-color: rgba(0, 0, 0, 0.2);
-  border-radius: $comment-box-border-radius;
   border: 1px solid $comment-box-border-color;
-  margin-bottom: 10px;
   margin-left: 5px;
   margin-right: 5px;
+  margin-top: 20px;
   padding: 10px;
 }
 
